@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Lab1.Application.Models</RootNamespace>
+  </PropertyGroup>
+</Project>

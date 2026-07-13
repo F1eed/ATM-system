@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RootNamespace>Lab1.Tests</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NSubstitute" />
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Lab1\Application\Lab1.Application.Abstractions\Lab1.Application.Abstractions.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Application\Lab1.Application.Contracts\Lab1.Application.Contracts.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Application\Lab1.Application.Models\Lab1.Application.Models.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Application\Lab1.Application\Lab1.Application.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Infrastructure\Lab1.Infrastructure.Persistence\Lab1.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Lab1.Application\Lab1.Application.csproj" />
+      <ProjectReference Include="..\..\src\Lab1\Lab1.Infrastructure.Persistence\Lab1.Infrastructure.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>

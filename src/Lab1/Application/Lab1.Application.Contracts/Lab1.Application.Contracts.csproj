@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <RootNamespace>Lab1.Application.Contracts</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Lab1.Application.Models\Lab1.Application.Models.csproj">
+        <Project>{11a70547-7c38-478d-8403-e12a0e579542}</Project>
+        <Name>Lab1.Application.Models</Name>
+      </ProjectReference>
+    </ItemGroup>
+
+</Project>
