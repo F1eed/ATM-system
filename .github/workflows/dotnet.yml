@@ -21,8 +21,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Check formatting
+        run: dotnet format --verify-no-changes
+
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore
 
       - name: Test
         run: dotnet test --no-build --verbosity normal
