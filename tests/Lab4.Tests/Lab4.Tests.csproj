@@ -15,8 +15,4 @@
         <PackageReference Include="xunit.runner.visualstudio"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\Lab4\Lab4\Lab4.csproj" />
-    </ItemGroup>
-
 </Project>

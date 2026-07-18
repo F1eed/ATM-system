@@ -4,33 +4,9 @@
     <File Path="Directory.Build.props" />
     <File Path=".gitignore" />
   </Folder>
-  <Folder Name="/src/" />
-  <Folder Name="/src/Lab1/">
-    <Project Path="src/Lab1/Lab1/Lab1.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab1/Application/">
-    <Project Path="src/Lab1/Application/Lab1.Application.Abstractions/Lab1.Application.Abstractions.csproj" />
-    <Project Path="src/Lab1/Application/Lab1.Application.Contracts/Lab1.Application.Contracts.csproj" />
-    <Project Path="src/Lab1/Application/Lab1.Application.Models/Lab1.Application.Models.csproj" />
-    <Project Path="src/Lab1/Application/Lab1.Application/Lab1.Application.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab1/Infrastructure/">
-    <Project Path="src/Lab1/Infrastructure/Lab1.Infrastructure.Persistence/Lab1.Infrastructure.Persistence.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab1/Presentation/">
-    <Project Path="src/Lab1/Presentation/Lab1.Presentation.Http/Lab1.Presentation.Http.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab2/">
-    <Project Path="src/Lab2/Lab2/Lab2.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab3/">
-    <Project Path="src/Lab3/Lab3/Lab3.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab4/">
-    <Project Path="src/Lab4/Lab4/Lab4.csproj" />
-  </Folder>
-  <Folder Name="/src/Lab5/">
-    <Project Path="src/Lab5/Lab5/Lab5.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/console-client/console-client.csproj" />
+    <Project Path="src/service/service.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Lab1.Application.Tests/Lab1.Application.Tests.csproj" />
