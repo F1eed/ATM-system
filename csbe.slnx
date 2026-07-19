@@ -4,9 +4,32 @@
     <File Path="Directory.Build.props" />
     <File Path=".gitignore" />
   </Folder>
-  <Folder Name="/src/">
-    <Project Path="src/console-client/console-client.csproj" />
-    <Project Path="src/service/service.csproj" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/console-client/" />
+  <Folder Name="/src/console-client/ConsoleClient.Application/">
+    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Abstractions/ConsoleClient.Application.Abstractions.csproj" />
+    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Contracts/ConsoleClient.Application.Contracts.csproj" />
+    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Model/ConsoleClient.Application.Model.csproj" />
+    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application/ConsoleClient.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/console-client/ConsoleClient.Infrastructure/">
+    <Project Path="src/console-client/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/console-client/ConsoleClient.Presentation/">
+    <Project Path="src/console-client/ConsoleClient.Presentation/ConsoleClient.Presentation/ConsoleClient.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/service/" />
+  <Folder Name="/src/service/Service.Application/">
+    <Project Path="src/service/Service.Application/Service.Application.Abstractions/Service.Application.Abstractions.csproj" />
+    <Project Path="src/service/Service.Application/Service.Application.Contracts/Service.Application.Contracts.csproj" />
+    <Project Path="src/service/Service.Application/Service.Application.Model/Service.Application.Model.csproj" />
+    <Project Path="src/service/Service.Application/Service.Application/Service.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/service/Service.Infrastructure/">
+    <Project Path="src/service/Service.Infrastructure/Service.Infrastructure.Persistence/Service.Infrastructure.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/service/Service.Presentation/">
+    <Project Path="src/service/Service.Presentation/Service.Presentation.Http/Service.Presentation.Http.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Lab1.Application.Tests/Lab1.Application.Tests.csproj" />
