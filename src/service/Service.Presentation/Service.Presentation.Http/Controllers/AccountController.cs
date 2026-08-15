@@ -1,0 +1,126 @@
+using Microsoft.AspNetCore.Mvc;
+using Service.Application.Contracts.Account;
+using Service.Application.Contracts.Account.Models;
+using Service.Application.Contracts.Account.Operations;
+using Service.Application.Contracts.Operation.Models;
+using Service.Presentation.Http.Models;
+using System.Diagnostics;
+
+namespace Service.Presentation.Http.Controllers;
+
+[ApiController]
+[Route("api/accounts")]
+public sealed class AccountController : ControllerBase
+{
+    private readonly IAccountService _accountService;
+
+    public AccountController(IAccountService accountService)
+    {
+        _accountService = accountService;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<AccountDto>> CreateAccount(
+        [FromBody] CreateAccountRequest httpRequest,
+        CancellationToken cancellationToken)
+    {
+        var list = httpRequest.Entries
+            .Select(entry => new CreateAccount.AccountEntry(entry.Number, entry.PinCode))
+            .ToList();
+
+        var requests = new CreateAccount.Request(httpRequest.SessionId, list);
+
+        CreateAccount.Response response = await _accountService.CreateAccountAsync(
+            requests,
+            cancellationToken);
+
+        return response switch
+        {
+            CreateAccount.Response.Success success => Ok(success.Account),
+            CreateAccount.Response.Failure failure => Unauthorized(failure.Error),
+            _ => throw new UnreachableException(),
+        };
+    }
+
+    [HttpPost("{sessionId}/deposits")]
+    public async Task<ActionResult<AccountDto>> DepositMoney(
+        [FromRoute] Guid sessionId,
+        [FromBody] DepositRequest httpRequest,
+        CancellationToken cancellationToken)
+    {
+        var request = new Deposit.Request(sessionId, httpRequest.Amount);
+
+        Deposit.Response response = await _accountService.DepositAsync(
+            request,
+            cancellationToken);
+
+        return response switch
+        {
+            Deposit.Response.Success success => Ok($"Your balance: {success.Account.Balance}"),
+            Deposit.Response.NotUserSession => Unauthorized(),
+            Deposit.Response.Failure failure => BadRequest(failure.Error),
+            _ => throw new UnreachableException(),
+        };
+    }
+
+    [HttpPost("{sessionId}/withdraws")]
+    public async Task<ActionResult<AccountDto>> WithdrawMoney(
+        [FromRoute] Guid sessionId,
+        [FromBody] WithdrawRequest httpRequest,
+        CancellationToken cancellationToken)
+    {
+        var request = new Withdraw.Request(sessionId, httpRequest.Amount);
+
+        Withdraw.Response response = await _accountService.WithdrawAsync(
+            request,
+            cancellationToken);
+
+        return response switch
+        {
+            Withdraw.Response.Success success => Ok($"Your remaining balance: {success.Account.Balance}"),
+            Withdraw.Response.NotUserSession => Unauthorized(),
+            Withdraw.Response.Failure failure => BadRequest(failure.Message),
+            _ => throw new UnreachableException(),
+        };
+    }
+
+    [HttpGet("{sessionId}/balance")] // чёт странно что апи с аккаунтом связано, но требует sessionId(отмена, там по условию так в 5ой лабе)
+    public async Task<ActionResult<AccountDto>> CheckAccountBalance(
+        [FromRoute] Guid sessionId,
+        CancellationToken cancellationToken)
+    {
+        var request = new CheckBalance.Request(sessionId);
+
+        CheckBalance.Response response = await _accountService.CheckBalanceAsync(
+            request,
+            cancellationToken);
+
+        return response switch
+        {
+            CheckBalance.Response.Success success => Ok(success.Balance),
+            CheckBalance.Response.NotUserSession => Unauthorized(),
+            CheckBalance.Response.Failure failure => BadRequest(failure.Error),
+            _ => throw new UnreachableException(),
+        };
+    }
+
+    [HttpGet("{sessionId}/operations")]
+    public async Task<ActionResult<OperationDto>> CheckAccountHistory(
+        Guid sessionId,
+        CancellationToken cancellationToken)
+    {
+        var request = new CheckHistory.Request(sessionId);
+
+        CheckHistory.Response response = await _accountService.CheckHistoryAsync(
+            request,
+            cancellationToken);
+
+        return response switch
+        {
+            CheckHistory.Response.Success success => Ok(success.Operations),
+            CheckHistory.Response.NotUserSession => Unauthorized(),
+            CheckHistory.Response.Failure failure => BadRequest(failure.Message),
+            _ => throw new UnreachableException(),
+        };
+    }
+}
