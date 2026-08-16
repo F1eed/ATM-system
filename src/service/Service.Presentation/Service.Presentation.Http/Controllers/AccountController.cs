@@ -20,7 +20,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AccountDto>> CreateAccount(
+    public async Task<ActionResult<AccountDto>> CreateAccountAsync(
         [FromBody] CreateAccountRequest httpRequest,
         CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("{sessionId}/deposits")]
-    public async Task<ActionResult<AccountDto>> DepositMoney(
+    public async Task<ActionResult<AccountDto>> DepositMoneyAsync(
         [FromRoute] Guid sessionId,
         [FromBody] DepositRequest httpRequest,
         CancellationToken cancellationToken)
@@ -64,7 +64,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("{sessionId}/withdraws")]
-    public async Task<ActionResult<AccountDto>> WithdrawMoney(
+    public async Task<ActionResult<AccountDto>> WithdrawMoneyAsync(
         [FromRoute] Guid sessionId,
         [FromBody] WithdrawRequest httpRequest,
         CancellationToken cancellationToken)
@@ -85,7 +85,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("{sessionId}/balance")] // чёт странно что апи с аккаунтом связано, но требует sessionId(отмена, там по условию так в 5ой лабе)
-    public async Task<ActionResult<AccountDto>> CheckAccountBalance(
+    public async Task<ActionResult<AccountDto>> CheckAccountBalanceAsync(
         [FromRoute] Guid sessionId,
         CancellationToken cancellationToken)
     {
@@ -105,7 +105,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("{sessionId}/operations")]
-    public async Task<ActionResult<OperationDto>> CheckAccountHistory(
+    public async Task<ActionResult<OperationDto>> CheckAccountHistoryAsync(
         Guid sessionId,
         CancellationToken cancellationToken)
     {

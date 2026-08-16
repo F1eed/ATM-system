@@ -19,7 +19,7 @@ public sealed class SessionController : ControllerBase
     }
 
     [HttpPost("admin")]
-    public async Task<ActionResult<SessionDto>> CreateAdmin(
+    public async Task<ActionResult<SessionDto>> CreateAdminAsync(
         [FromBody] CreateAdminRequest httpRequest,
         CancellationToken cancellationToken)
     {
@@ -38,7 +38,7 @@ public sealed class SessionController : ControllerBase
     }
 
     [HttpPost("user")]
-    public async Task<ActionResult<SessionDto>> CreateUser(
+    public async Task<ActionResult<SessionDto>> CreateUserAsync(
         [FromBody] CreateUserRequest httpRequest,
         CancellationToken cancellationToken)
     {
