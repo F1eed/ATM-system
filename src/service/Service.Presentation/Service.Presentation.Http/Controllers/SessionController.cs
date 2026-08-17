@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Application.Contracts.Session;
-using Service.Application.Contracts.Session.Models;
 using Service.Application.Contracts.Session.Operations;
 using Service.Presentation.Http.Models;
 using System.Diagnostics;
@@ -19,7 +18,7 @@ public sealed class SessionController : ControllerBase
     }
 
     [HttpPost("admin")]
-    public async Task<ActionResult<SessionDto>> CreateAdminAsync(
+    public async Task<ActionResult<CreateAdminResponse>> CreateAdminAsync(
         [FromBody] CreateAdminRequest httpRequest,
         CancellationToken cancellationToken)
     {
@@ -31,14 +30,14 @@ public sealed class SessionController : ControllerBase
 
         return response switch
         {
-            CreateAdminSession.Response.Success success => Ok(success.Session.Id),
+            CreateAdminSession.Response.Success success => Ok(new CreateAdminResponse(success.Session.Id)),
             CreateAdminSession.Response.Failure failure => BadRequest(failure.Error),
             _ => throw new UnreachableException(),
         };
     }
 
     [HttpPost("user")]
-    public async Task<ActionResult<SessionDto>> CreateUserAsync(
+    public async Task<ActionResult<CreateUserResponse>> CreateUserAsync(
         [FromBody] CreateUserRequest httpRequest,
         CancellationToken cancellationToken)
     {
@@ -50,11 +49,28 @@ public sealed class SessionController : ControllerBase
             request,
             cancellationToken);
 
-        return response switch
+        if (response is CreateUserSession.Response.Success success)
         {
-            CreateUserSession.Response.Success success => Ok(success.Sessions),
-            CreateUserSession.Response.Failure failure => Unauthorized(failure.Error),
-            _ => throw new UnreachableException(),
-        };
+            var entries = success.Sessions
+                .Select(entry => new CreateUserResponse.UserSessionEntry(entry.Id))
+                .ToList();
+            return Ok(
+                new CreateUserResponse(entries));
+        }
+        else if (response is CreateUserSession.Response.Failure failure)
+        {
+            return Unauthorized(failure.Error);
+        }
+        else
+        {
+            throw new UnreachableException();
+        }
+
+        // return response switch
+        // {
+        //     CreateUserSession.Response.Success success => Ok(success.Sessions),
+        //     CreateUserSession.Response.Failure failure => Unauthorized(failure.Error),
+        //     _ => throw new UnreachableException(),
+        // }; Убрал это потому что теперь не дтошки возвращаю а тип который хранит в себе энтри, хз норм нет?
     }
 }
