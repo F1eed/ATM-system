@@ -28,15 +28,15 @@ public sealed class AccountController : ControllerBase
             .Select(entry => new CreateAccount.AccountEntry(entry.Number, entry.PinCode))
             .ToList();
 
-        var requests = new CreateAccount.Request(httpRequest.SessionId, list);
+        var request = new CreateAccount.Request(httpRequest.SessionId, list);
 
         CreateAccount.Response response = await _accountService.CreateAccountAsync(
-            requests,
+            request,
             cancellationToken);
 
         return response switch
         {
-            CreateAccount.Response.Success success => Ok(success.Account),
+            CreateAccount.Response.Success success => Ok(success.Accounts),
             CreateAccount.Response.Failure failure => Unauthorized(failure.Error),
             _ => throw new UnreachableException(),
         };

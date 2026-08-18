@@ -10,7 +10,7 @@ public static class CreateAccount
     {
         private Response() { }
 
-        public sealed record Success(IReadOnlyCollection<AccountDto> Account) : Response;
+        public sealed record Success(IReadOnlyCollection<AccountDto> Accounts) : Response;
 
         public sealed record Failure(string Error) : Response;
     }
