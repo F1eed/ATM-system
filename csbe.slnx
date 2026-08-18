@@ -13,6 +13,7 @@
         <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application/ConsoleClient.Application.csproj" />
     </Folder>
     <Folder Name="/src/console-client/Infrastructure/">
+        <Project Path="src/console-client/ConsoleClient.Infrastructure.SessionService/ConsoleClient.Infrastructure.SessionService.csproj" />
         <Project Path="src\console-client\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.AccountService\ConsoleClient.Infrastructure.AccountService.csproj" />
     </Folder>
     <Folder Name="/src/console-client/Presentation/">
