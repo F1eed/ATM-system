@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Service.Presentation.Http.Controllers;
 
 [ApiController]
-[Route("api/session/create")]
+[Route("api/session")]
 public sealed class SessionController : ControllerBase
 {
     private readonly ISessionService _sessionService;
