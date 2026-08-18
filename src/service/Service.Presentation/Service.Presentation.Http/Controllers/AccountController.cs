@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Application.Contracts.Account;
-using Service.Application.Contracts.Account.Models;
 using Service.Application.Contracts.Account.Operations;
-using Service.Application.Contracts.Operation.Models;
 using Service.Presentation.Http.Models;
 using System.Diagnostics;
 
@@ -20,7 +18,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AccountDto>> CreateAccountAsync(
+    public async Task<ActionResult<CreateAccountResponse>> CreateAccountAsync(
         [FromBody] CreateAccountRequest httpRequest,
         CancellationToken cancellationToken)
     {
@@ -36,14 +34,19 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            CreateAccount.Response.Success success => Ok(success.Accounts),
+            CreateAccount.Response.Success success => Ok(new CreateAccountResponse(
+                success.Accounts
+                    .Select(dto => new AccountEntry(
+                        dto.Number,
+                        dto.Balance))
+                    .ToList())),
             CreateAccount.Response.Failure failure => Unauthorized(failure.Error),
             _ => throw new UnreachableException(),
         };
     }
 
     [HttpPost("{sessionId}/deposits")]
-    public async Task<ActionResult<AccountDto>> DepositMoneyAsync(
+    public async Task<ActionResult<DepositResponse>> DepositMoneyAsync(
         [FromRoute] Guid sessionId,
         [FromBody] DepositRequest httpRequest,
         CancellationToken cancellationToken)
@@ -56,7 +59,10 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            Deposit.Response.Success success => Ok($"Your balance: {success.Account.Balance}"),
+            Deposit.Response.Success success => Ok(
+                new DepositResponse(new AccountEntry(
+                    success.Account.Number,
+                    success.Account.Balance))),
             Deposit.Response.NotUserSession => Unauthorized(),
             Deposit.Response.Failure failure => BadRequest(failure.Error),
             _ => throw new UnreachableException(),
@@ -64,7 +70,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("{sessionId}/withdraws")]
-    public async Task<ActionResult<AccountDto>> WithdrawMoneyAsync(
+    public async Task<ActionResult<WithdrawResponse>> WithdrawMoneyAsync(
         [FromRoute] Guid sessionId,
         [FromBody] WithdrawRequest httpRequest,
         CancellationToken cancellationToken)
@@ -77,7 +83,10 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            Withdraw.Response.Success success => Ok($"Your remaining balance: {success.Account.Balance}"),
+            Withdraw.Response.Success success => Ok(new WithdrawResponse(
+                new AccountEntry(
+                    success.Account.Number,
+                    success.Account.Balance))),
             Withdraw.Response.NotUserSession => Unauthorized(),
             Withdraw.Response.Failure failure => BadRequest(failure.Message),
             _ => throw new UnreachableException(),
@@ -85,7 +94,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("{sessionId}/balance")] // чёт странно что апи с аккаунтом связано, но требует sessionId(отмена, там по условию так в 5ой лабе)
-    public async Task<ActionResult<AccountDto>> CheckAccountBalanceAsync(
+    public async Task<ActionResult<CheckBalanceResponse>> CheckAccountBalanceAsync(
         [FromRoute] Guid sessionId,
         CancellationToken cancellationToken)
     {
@@ -97,7 +106,8 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            CheckBalance.Response.Success success => Ok(success.Balance),
+            CheckBalance.Response.Success success => Ok(new CheckBalanceResponse(
+                success.Balance)),
             CheckBalance.Response.NotUserSession => Unauthorized(),
             CheckBalance.Response.Failure failure => BadRequest(failure.Error),
             _ => throw new UnreachableException(),
@@ -105,7 +115,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("{sessionId}/operations")]
-    public async Task<ActionResult<OperationDto>> CheckAccountHistoryAsync(
+    public async Task<ActionResult<CheckHistoryResponse>> CheckAccountHistoryAsync(
         Guid sessionId,
         CancellationToken cancellationToken)
     {
@@ -117,7 +127,7 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            CheckHistory.Response.Success success => Ok(success.Operations),
+            CheckHistory.Response.Success success => Ok(new CheckHistoryResponse(success.Operations)),
             CheckHistory.Response.NotUserSession => Unauthorized(),
             CheckHistory.Response.Failure failure => BadRequest(failure.Message),
             _ => throw new UnreachableException(),
