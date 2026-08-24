@@ -41,30 +41,20 @@ public sealed class SessionController : ControllerBase
         [FromBody] CreateUserRequest httpRequest,
         CancellationToken cancellationToken)
     {
-        var request = new CreateUserSession.Request(httpRequest.Entries
-            .Select(entry => new CreateUserSession.UserEntry(entry.Number, entry.PinCode))
-            .ToList());
+        var request = new CreateUserSession.Request(
+            httpRequest.Number,
+            httpRequest.PinCode);
 
         CreateUserSession.Response response = await _sessionService.CreateUserSessionAsync(
             request,
             cancellationToken);
 
-        if (response is CreateUserSession.Response.Success success)
+        return response switch
         {
-            var entries = success.Sessions
-                .Select(entry => new CreateUserResponse.UserSessionEntry(entry.Id))
-                .ToList();
-            return Ok(
-                new CreateUserResponse(entries));
-        }
-        else if (response is CreateUserSession.Response.Failure failure)
-        {
-            return Unauthorized(failure.Error);
-        }
-        else
-        {
-            throw new UnreachableException();
-        }
+            CreateUserSession.Response.Success success => Ok(new CreateUserResponse(success.Session.Id)),
+            CreateUserSession.Response.Failure failure => Unauthorized(failure.Error),
+            _ => throw new UnreachableException(),
+        };
 
         // return response switch
         // {

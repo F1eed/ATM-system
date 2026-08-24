@@ -1,5 +1,2 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-        <ProjectReference Include="..\Service.Application.Model\Service.Application.Model.csproj"/>
-    </ItemGroup>
 </Project>
