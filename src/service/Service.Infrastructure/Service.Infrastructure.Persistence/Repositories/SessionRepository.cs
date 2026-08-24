@@ -18,22 +18,25 @@ internal sealed class SessionRepository : ISessionRepository
         _connectionProvider = connectionProvider;
     }
 
-    public async Task AddOrUpdateAsync(IReadOnlyCollection<ISession> sessions, CancellationToken cancellationToken)
+    public async Task AddOrUpdateAsync(
+        ISession session,
+        CancellationToken cancellationToken)
     {
         const string sql =
             """
             INSERT INTO sessions (session_id, session_data) 
             SELECT source.id, source.data::jsonb
-            FROM unnest(:ids, :data) AS source(id, data)
+            FROM :ids, :data AS source(id, data)
             ON CONFLICT ON CONSTRAINT sessions_pkey DO UPDATE
               SET session_data = excluded.session_data
             """;
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using IPersistenceConnection connection = await _connectionProvider
+            .GetConnectionAsync(cancellationToken);
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("data", sessions.Select(x => JsonSerializer.Serialize(x)))
-            .AddParameter("ids", sessions.Select(x => x.SessionId));
+            .AddParameter("data", JsonSerializer.Serialize(session))
+            .AddParameter("ids", session.SessionId);
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
@@ -50,7 +53,8 @@ internal sealed class SessionRepository : ISessionRepository
            OR session_id = ANY(:session_ids);
         """;
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using IPersistenceConnection connection = await _connectionProvider
+            .GetConnectionAsync(cancellationToken);
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
             .AddParameter("session_ids", query.Ids);

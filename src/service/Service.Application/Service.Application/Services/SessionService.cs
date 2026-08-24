@@ -15,7 +15,10 @@ internal class SessionService : ISessionService
 {
     private readonly IPersistenceContext _context;
     private readonly IPersistenceTransactionProvider _transactionProvider;
-    private readonly IConfiguration _configuration; // Надо ли всю конфигурацию тут хранить, когда по сути только поле нужно одно и можно его строкой записать и через DI прокидывать
+
+    // Надо ли всю конфигурацию тут хранить, когда по сути только
+    // поле нужно одно и можно его строкой записать и через DI прокидывать
+    private readonly IConfiguration _configuration;
 
     public SessionService(
         IPersistenceContext context,
@@ -36,13 +39,14 @@ internal class SessionService : ISessionService
             return new CreateAdminSession.Response.Failure("Incorrect Password");
         }
 
-        await using IPersistenceTransaction transaction = await _transactionProvider
-            .BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+        await using IPersistenceTransaction transaction = await _transactionProvider.BeginTransactionAsync(
+                IsolationLevel.ReadCommitted,
+                cancellationToken);
 
         var adminSession = new AdminSession();
 
         await _context.Sessions.AddOrUpdateAsync(
-            [adminSession],
+            adminSession,
             cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
@@ -54,38 +58,35 @@ internal class SessionService : ISessionService
         CreateUserSession.Request request,
         CancellationToken cancellationToken)
     {
-        await using IPersistenceTransaction transaction = await _transactionProvider
-            .BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+        await using IPersistenceTransaction transaction = await _transactionProvider.BeginTransactionAsync(
+            IsolationLevel.ReadCommitted,
+            cancellationToken);
 
-        List<UserSession> sessions = [];
+        AccountQuery builder = AccountQuery.Build(builder => builder
+            .WithNumber(request.Number));
 
-        foreach (CreateUserSession.UserEntry entry in request.Entries)
+        Account? account = await _context.Accounts
+            .QueryAsync(builder, cancellationToken)
+            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+
+        if (account is null)
         {
-            AccountQuery builder = AccountQuery.Build(builder => builder.WithNumber(entry.Number));
-
-            Account? account = await _context.Accounts
-                .QueryAsync(builder, cancellationToken)
-                .SingleOrDefaultAsync(cancellationToken: cancellationToken);
-
-            if (account is null)
-            {
-                return new CreateUserSession.Response.Failure("Account is not found");
-            }
-
-            if (account.PinCode != entry.PinCode)
-            {
-                return new CreateUserSession.Response.Failure("Invalid pin");
-            }
-
-            sessions.Add(new UserSession(account.AccountId));
+            return new CreateUserSession.Response.Failure("Account is not found");
         }
 
+        if (account.PinCode != request.PinCode)
+        {
+            return new CreateUserSession.Response.Failure("Invalid pin");
+        }
+
+        var session = new UserSession(account.AccountId);
+
         await _context.Sessions.AddOrUpdateAsync(
-            sessions,
+            session,
             cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 
-        return new CreateUserSession.Response.Success(sessions.Select(session => session.MapToDto()).ToList());
+        return new CreateUserSession.Response.Success(session.MapToDto());
     }
 }

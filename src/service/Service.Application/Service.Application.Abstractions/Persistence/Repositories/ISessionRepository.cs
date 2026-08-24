@@ -6,7 +6,7 @@ namespace Service.Application.Abstractions.Persistence.Repositories;
 public interface ISessionRepository
 {
     Task AddOrUpdateAsync(
-        IReadOnlyCollection<ISession> sessions,
+        ISession session,
         CancellationToken cancellationToken);
 
     IAsyncEnumerable<ISession> QueryAsync(

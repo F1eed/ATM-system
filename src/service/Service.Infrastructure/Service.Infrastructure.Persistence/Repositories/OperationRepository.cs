@@ -25,15 +25,16 @@ internal sealed class OperationRepository : IOperationRepository
         IReadOnlyCollection<OperationBase> operations,
         CancellationToken cancellationToken)
     {
-        const string sql = """
-                           INSERT INTO operations (account_id, balance, type)
-                           SELECT source.account_id, source.balance, source.type::operation_type
-                           FROM unnest (:account_ids, :balances, :types) AS SOURCE(account_id, balance, type)
-                           ON CONFLICT ON CONSTRAINT operations_pkey DO UPDATE
-                           SET account_id = excluded.account_id,
-                               balance = excluded.balance,
-                               type = excluded.type
-                           """;
+        const string sql =
+        """
+        INSERT INTO operations (account_id, balance, type)
+        SELECT source.account_id, source.balance, source.type::operation_type
+        FROM unnest (:account_ids, :balances, :types) AS SOURCE(account_id, balance, type)
+        ON CONFLICT ON CONSTRAINT operations_pkey DO UPDATE
+        SET account_id = excluded.account_id,
+           balance = excluded.balance,
+           type = excluded.type
+        """;
 
         await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
 
