@@ -1,0 +1,17 @@
+using ConsoleClient.Application.Contracts.Models;
+
+namespace ConsoleClient.Application.Contracts.Operations;
+
+public class CreateAdminSession
+{
+    public readonly record struct Request(string Password);
+
+    public abstract record Result
+    {
+        private Result() { }
+
+        public sealed record Success(SessionDto Session) : Result;
+
+        public sealed record Failure(string ErrorMessage) : Result;
+    }
+}
