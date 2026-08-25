@@ -2,4 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Refit.HttpClientFactory" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ConsoleClient.Application\ConsoleClient.Application.Abstractions\ConsoleClient.Application.Abstractions.csproj" />
+  </ItemGroup>
 </Project>
