@@ -2,7 +2,7 @@ namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
 public static class CreateAccount
 {
-    public readonly record struct Request(string Number, string PinCode);
+    public readonly record struct Request(string CardNumber, string PinCode);
 
     public abstract record Result
     {
