@@ -25,8 +25,7 @@ internal sealed class SessionRepository : ISessionRepository
         const string sql =
             """
             INSERT INTO sessions (session_id, session_data) 
-            SELECT source.id, source.data::jsonb
-            FROM :ids, :data AS source(id, data)
+            VALUES (:id, :data::jsonb)
             ON CONFLICT ON CONSTRAINT sessions_pkey DO UPDATE
               SET session_data = excluded.session_data
             """;
@@ -36,7 +35,7 @@ internal sealed class SessionRepository : ISessionRepository
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
             .AddParameter("data", JsonSerializer.Serialize(session))
-            .AddParameter("ids", session.SessionId);
+            .AddParameter("id", session.SessionId);
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
