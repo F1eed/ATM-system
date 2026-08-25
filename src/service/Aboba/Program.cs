@@ -13,18 +13,7 @@ builder.Services
     .AddInfrastructurePersistence()
     .AddPresentationHttp();
 
-builder.Services
-    .AddSwaggerGen(x =>
-    {
-        x.UseOneOfForPolymorphism();
-        x.UseInlineDefinitionsForEnums();
-    })
-    .AddEndpointsApiExplorer();
-
 WebApplication app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 app.MapControllers();
 
