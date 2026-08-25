@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Service.Presentation.Http.Controllers;
 
 [ApiController]
-[Route("api/accounts")]
+[Route("api/account")]
 public sealed class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
