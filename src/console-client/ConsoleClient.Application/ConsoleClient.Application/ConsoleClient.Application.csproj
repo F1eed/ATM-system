@@ -1,2 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\ConsoleClient.Infrastructure.SessionService\ConsoleClient.Infrastructure.SessionService.csproj" />
+    <ProjectReference Include="..\..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.AccountService\ConsoleClient.Infrastructure.AccountService.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Application.Abstractions\ConsoleClient.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Application.Contracts\ConsoleClient.Application.Contracts.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Application.Model\ConsoleClient.Application.Model.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Refit.Reflection" />
+  </ItemGroup>
 </Project>

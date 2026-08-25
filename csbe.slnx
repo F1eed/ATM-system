@@ -5,7 +5,9 @@
         <File Path=".gitignore" />
     </Folder>
     <Folder Name="/src/" />
-    <Folder Name="/src/console-client/" />
+    <Folder Name="/src/console-client/">
+        <Project Path="src/console-client/ConsoleClient/ConsoleClient.csproj" />
+    </Folder>
     <Folder Name="/src/console-client/Application/">
         <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Abstractions/ConsoleClient.Application.Abstractions.csproj" />
         <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Contracts/ConsoleClient.Application.Contracts.csproj" />
