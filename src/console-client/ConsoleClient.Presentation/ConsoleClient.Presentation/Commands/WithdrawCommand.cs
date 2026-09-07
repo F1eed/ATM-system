@@ -23,37 +23,37 @@ public class WithdrawCommand : AsyncCommand
         CommandContext context,
         CancellationToken cancellationToken)
     {
-         if (_clientContext.UserSessionId is null)
-         {
-             AnsiConsole.MarkupLine("[red]ERROR: YOU ARE UNAUTHORIZED[/]");
-             return 1;
-         }
+        if (_clientContext.UserSessionId is null)
+        {
+            AnsiConsole.MarkupLine("[red]ERROR: YOU ARE UNAUTHORIZED[/]");
+            return 1;
+        }
 
-         var money = new TextPrompt<decimal>("Enter amount: ");
+        var money = new TextPrompt<decimal>("Enter amount: ");
 
-         decimal moneyResult = AnsiConsole.Prompt(money);
+        decimal moneyResult = AnsiConsole.Prompt(money);
 
-         var request = new Withdraw.Request(
-             _clientContext.UserSessionId.Value,
-             moneyResult);
+        var request = new Withdraw.Request(
+            _clientContext.UserSessionId.Value,
+            moneyResult);
 
-         Withdraw.Result result = await _service.WithdrawAsync(
-             request,
-             cancellationToken);
+        Withdraw.Result result = await _service.WithdrawAsync(
+            request,
+            cancellationToken);
 
-         if (result is Withdraw.Result.Success success)
-         {
-             AnsiConsole.MarkupLine(
-                 $"[green]You success withdraw {moneyResult}. Current balance: {success.AccountDto.Balance}[/]");
-             return 0;
-         }
+        if (result is Withdraw.Result.Success success)
+        {
+            AnsiConsole.MarkupLine(
+                $"[green]You success withdraw {moneyResult}. Current balance: {success.AccountDto.Balance}[/]");
+            return 0;
+        }
 
-         if (result is Withdraw.Result.Failure failure)
-         {
-             AnsiConsole.MarkupLine($"[red]ERROR: {failure.ErrorMessage}[/]");
-             return 1;
-         }
+        if (result is Withdraw.Result.Failure failure)
+        {
+            AnsiConsole.MarkupLine($"[red]ERROR: {failure.ErrorMessage}[/]");
+            return 1;
+        }
 
-         throw new UnreachableException();
+        throw new UnreachableException();
     }
 }
