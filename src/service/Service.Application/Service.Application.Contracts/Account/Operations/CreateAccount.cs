@@ -17,13 +17,13 @@ public static class CreateAccount
 
     public class AccountEntry // Траблы с неймингом
     {
-        public AccountEntry(string number, string pinCode)
+        public AccountEntry(string cardNumber, string pinCode)
         {
-            Number = number;
+            CardNumber = cardNumber;
             PinCode = pinCode;
         }
 
-        public string Number { get; }
+        public string CardNumber { get; }
 
         public string PinCode { get; }
     }

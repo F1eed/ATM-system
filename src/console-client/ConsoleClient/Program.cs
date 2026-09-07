@@ -11,9 +11,11 @@ IConfigurationRoot configuration = new ConfigurationManager()
     .AddUserSecrets<Program>()
     .Build();
 
+var clientContext = new ClientContext();
+
 IServiceCollection collection = new ServiceCollection()
     .AddSingleton<IConfiguration>(configuration)
-    .AddPresentationConsole()
+    .AddSingleton(clientContext)
     .AddApplication()
     .AddSessionClient();
 

@@ -56,7 +56,7 @@ internal class AccountService : IAccountService
             list.Add(
                 new Account(
                     AccountId.Default, // А норм ли выход? Просто в бд уже потом норм айди будет
-                    entry.Number,
+                    entry.CardNumber,
                     entry.PinCode));
         }
 

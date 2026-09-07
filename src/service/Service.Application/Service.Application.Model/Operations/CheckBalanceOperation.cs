@@ -8,5 +8,6 @@ public class CheckBalanceOperation : OperationBase
         operationId,
         accountId,
         balance,
-        OperationType.CheckBalance) { }
+        OperationType.CheckBalance)
+    { }
 }

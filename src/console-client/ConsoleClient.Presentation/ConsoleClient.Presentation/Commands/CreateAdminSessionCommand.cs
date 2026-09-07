@@ -37,7 +37,8 @@ public sealed class CreateAdminSessionCommand : AsyncCommand
         if (result is CreateAdminSession.Result.Success success)
         {
             _clientContext.AdminSessionId = success.Session.SessionId;
-            AnsiConsole.Console.MarkupLine("[green]Success[/]");
+            AnsiConsole.Console.MarkupLine(
+                $"[green]Success create session with {success.Session.SessionId} ID.[/]");
             return 0;
         }
 

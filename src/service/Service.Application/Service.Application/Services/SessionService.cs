@@ -63,7 +63,7 @@ internal class SessionService : ISessionService
             cancellationToken);
 
         AccountQuery builder = AccountQuery.Build(builder => builder
-            .WithNumber(request.Number));
+            .WithCardNumber(request.CardNumber));
 
         Account? account = await _context.Accounts
             .QueryAsync(builder, cancellationToken)

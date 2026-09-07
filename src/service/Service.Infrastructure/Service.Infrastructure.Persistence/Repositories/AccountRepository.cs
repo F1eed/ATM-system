@@ -59,7 +59,7 @@ internal sealed class AccountRepository : IAccountRepository
         await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("number", query.Number)
+            .AddParameter("number", query.CardNumber)
             .AddParameter("id", query.Id.Value);
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);

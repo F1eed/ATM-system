@@ -40,7 +40,7 @@ public class SessionClient : ISessionClient
         CancellationToken cancellationToken)
     {
         var httpRequest = new CreateUserRequest(
-            request.Number,
+            request.CardNumber,
             request.PinCode);
 
         IApiResponse<CreateUserResponse> response = await _client.CreateUserAsync(

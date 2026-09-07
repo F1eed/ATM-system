@@ -8,5 +8,6 @@ public class WithdrawOperation : OperationBase
         operationId,
         accountId,
         balance,
-        OperationType.Withdraw) { }
+        OperationType.Withdraw)
+    { }
 }

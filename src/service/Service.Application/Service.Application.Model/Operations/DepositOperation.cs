@@ -8,5 +8,6 @@ public class DepositOperation : OperationBase
         operationId,
         accountId,
         balance,
-        OperationType.Deposit) { }
+        OperationType.Deposit)
+    { }
 }

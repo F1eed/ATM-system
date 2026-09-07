@@ -4,9 +4,7 @@
       <UserSecretsId>dda59132-acac-40b3-9355-3685f5dc8175</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\ConsoleClient.Application\ConsoleClient.Application\ConsoleClient.Application.csproj" />
-      <ProjectReference Include="..\ConsoleClient.Infrastructure.SessionService\ConsoleClient.Infrastructure.SessionService.csproj" />
-      <ProjectReference Include="..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.AccountService\ConsoleClient.Infrastructure.AccountService.csproj" />
+      <ProjectReference Include="..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.SessionService\ConsoleClient.Infrastructure.SessionService.csproj" />
       <ProjectReference Include="..\ConsoleClient.Presentation\ConsoleClient.Presentation\ConsoleClient.Presentation.csproj" />
     </ItemGroup>
     <ItemGroup>

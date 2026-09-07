@@ -6,10 +6,10 @@ public static class CreateAdminSession
 
     public abstract record Result
     {
-       private Result() { }
+        private Result() { }
 
-       public sealed record Success(Model.Session Session) : Result;
+        public sealed record Success(Model.Session Session) : Result;
 
-       public sealed record Failure(string ErrorMessage) : Result;
+        public sealed record Failure(string ErrorMessage) : Result;
     }
 }

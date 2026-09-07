@@ -42,7 +42,7 @@ public sealed class SessionController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new CreateUserSession.Request(
-            httpRequest.Number,
+            httpRequest.CardNumber,
             httpRequest.PinCode);
 
         CreateUserSession.Response response = await _sessionService.CreateUserSessionAsync(

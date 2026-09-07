@@ -13,6 +13,6 @@ public sealed class CreateAccountRequest
     {
         public required string PinCode { get; init; }
 
-        public required string Number { get; init; }
+        public required string CardNumber { get; init; }
     }
 }
