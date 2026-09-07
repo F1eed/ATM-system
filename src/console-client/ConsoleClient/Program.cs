@@ -1,4 +1,5 @@
 ﻿using ConsoleClient.Application;
+using ConsoleClient.Infrastructure.AccountService;
 using ConsoleClient.Infrastructure.SessionService;
 using ConsoleClient.Presentation;
 using ConsoleClient.Presentation.Commands;
@@ -17,7 +18,8 @@ IServiceCollection collection = new ServiceCollection()
     .AddSingleton<IConfiguration>(configuration)
     .AddSingleton(clientContext)
     .AddApplication()
-    .AddSessionClient();
+    .AddSessionClient()
+    .AddAccountClient();
 
 var registrar = new ServiceCollectionRegistrar(collection);
 
@@ -34,12 +36,24 @@ app.Configure(config =>
 
         create.AddBranch("user", user =>
                 user.AddCommand<CreateUserSessionCommand>("session"));
+
+        create.AddCommand<CreateAccountCommand>("account");
     });
+
+    config.AddCommand<DepositCommand>("deposit");
+
+    config.AddCommand<WithdrawCommand>("withdraw");
+
+    config.AddBranch("check", check =>
+        {
+            check.AddCommand<CheckBalanceCommand>("balance");
+            check.AddCommand<CheckHistoryCommand>("history");
+        });
 });
 
 while (true)
 {
-    string input = AnsiConsole.Ask<string>(">");
+    string input = AnsiConsole.Ask<string>("[yellow]>[/]");
 
     if (input == "exit")
     {
