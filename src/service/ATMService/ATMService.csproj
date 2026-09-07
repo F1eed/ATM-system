@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+      <RootNamespace>Aboba</RootNamespace>
+    </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Service.Application\Service.Application\Service.Application.csproj"/>
         <ProjectReference Include="..\Service.Infrastructure\Service.Infrastructure.Persistence\Service.Infrastructure.Persistence.csproj"/>

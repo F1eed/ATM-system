@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/common/">
-    <File Path="Directory.Packages.props"/>
-    <File Path="Directory.Build.props"/>
-    <File Path=".gitignore"/>
+    <File Path="Directory.Packages.props" />
+    <File Path="Directory.Build.props" />
+    <File Path=".gitignore" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/console-client/">
@@ -22,7 +22,7 @@
     <Project Path="src/console-client/ConsoleClient.Presentation/ConsoleClient.Presentation/ConsoleClient.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/service/">
-    <Project Path="src/service/Aboba/Aboba.csproj" />
+    <Project Path="src\service\ATMService\ATMService.csproj" />
   </Folder>
   <Folder Name="/src/service/Service.Application/">
     <Project Path="src/service/Service.Application/Service.Application.Abstractions/Service.Application.Abstractions.csproj" />
