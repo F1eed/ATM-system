@@ -11,8 +11,8 @@
     <PackageVersion Include="Itmo.Dev.Platform.Persistence.Abstractions" Version="1.2.468" />
     <PackageVersion Include="Itmo.Dev.Platform.Persistence.Postgres" Version="1.2.484" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="15.2.0" />
     <PackageVersion Include="Refit.Reflection" Version="15.2.0" />

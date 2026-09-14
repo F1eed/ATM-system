@@ -22,9 +22,9 @@ public sealed class AccountController : ControllerBase
         [FromBody] CreateAccountRequest httpRequest,
         CancellationToken cancellationToken)
     {
-        var list = httpRequest.Entries
+        var list = httpRequest.Entries3
             .Select(entry =>
-                new CreateAccount.AccountEntry(entry.CardNumber, entry.PinCode))
+                new CreateAccount.Account(entry.CardNumber, entry.PinCode))
             .ToList();
 
         var request = new CreateAccount.Request(httpRequest.SessionId, list);

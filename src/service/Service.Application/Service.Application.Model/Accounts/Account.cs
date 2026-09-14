@@ -2,6 +2,8 @@ namespace Service.Application.Model.Accounts;
 
 public class Account
 {
+    // TODO: можно сделать конструктор приватным и сделать 2 публичный статик метода CreateNew и CreateFromDb
+    // у которых уже будут разные аргументы
     public Account(
         AccountId accountId,
         string cardNumber,
@@ -20,6 +22,7 @@ public class Account
 
     public string PinCode { get; }
 
+    // TODO: vo для денег
     public decimal Balance { get; private set; }
 
     public bool TryWithdraw(decimal amount)

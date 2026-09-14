@@ -4,7 +4,9 @@ namespace Service.Application.Contracts.Account.Operations;
 
 public static class CreateAccount
 {
-    public readonly record struct Request(Guid SessionId, IReadOnlyCollection<AccountEntry> Entries);
+    public readonly record struct Request(Guid SessionId, IReadOnlyCollection<Account> Accounts);
+
+    public record Account(string CardNumber, string PinCode);
 
     public abstract record Response
     {
@@ -13,18 +15,5 @@ public static class CreateAccount
         public sealed record Success(IReadOnlyCollection<AccountDto> Accounts) : Response;
 
         public sealed record Failure(string Error) : Response;
-    }
-
-    public class AccountEntry // Траблы с неймингом
-    {
-        public AccountEntry(string cardNumber, string pinCode)
-        {
-            CardNumber = cardNumber;
-            PinCode = pinCode;
-        }
-
-        public string CardNumber { get; }
-
-        public string PinCode { get; }
     }
 }

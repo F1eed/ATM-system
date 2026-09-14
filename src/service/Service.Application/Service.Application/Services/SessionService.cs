@@ -1,5 +1,5 @@
 using Itmo.Dev.Platform.Persistence.Abstractions.Transactions;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Contracts.Session;
@@ -7,6 +7,7 @@ using Service.Application.Contracts.Session.Operations;
 using Service.Application.Mapping;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Sessions;
+using Service.Application.Services.Options;
 using System.Data;
 
 namespace Service.Application.Services;
@@ -15,26 +16,24 @@ internal class SessionService : ISessionService
 {
     private readonly IPersistenceContext _context;
     private readonly IPersistenceTransactionProvider _transactionProvider;
-
-    // Надо ли всю конфигурацию тут хранить, когда по сути только
-    // поле нужно одно и можно его строкой записать и через DI прокидывать
-    private readonly IConfiguration _configuration;
+    private readonly SessionServiceOptions _options;
 
     public SessionService(
         IPersistenceContext context,
         IPersistenceTransactionProvider transactionProvider,
-        IConfiguration configuration)
+        IOptions<SessionServiceOptions> options)
     {
         _context = context;
         _transactionProvider = transactionProvider;
-        _configuration = configuration;
+        _options = options.Value;
     }
 
     public async Task<CreateAdminSession.Response> CreateAdminSessionAsync(
         CreateAdminSession.Request request,
         CancellationToken cancellationToken)
     {
-        if (request.Password != _configuration["Password"])
+        // посмотреть что такое Options
+        if (request.Password != _options.Password)
         {
             return new CreateAdminSession.Response.Failure("Incorrect Password");
         }

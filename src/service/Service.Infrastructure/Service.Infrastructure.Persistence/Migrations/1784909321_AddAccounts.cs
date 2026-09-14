@@ -6,6 +6,8 @@ namespace Service.Infrastructure.Persistence.Migrations;
 [Migration(1784909321, "Accounts")]
 public class AddAccounts : SqlMigration
 {
+    // TODO: дефолт 0 у баланса будто лишний, аккаунт айди не бигинт, а бигсериал - касается всех айдишников
+    // добавиьт юник на номер карты
     protected override string GetUpSql(IServiceProvider serviceProvider) =>
         """
         CREATE TABLE accounts (

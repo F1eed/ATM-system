@@ -39,28 +39,27 @@ internal class AccountService : IAccountService
             .QueryAsync(builder, cancellationToken)
             .SingleOrDefaultAsync(cancellationToken: cancellationToken);
 
-        if (session is null)
-        {
-            return new CreateAccount.Response.Failure("Session is not found");
-        }
-
-        if (session is UserSession)
+        if (session is not AdminSession)
         {
             return new CreateAccount.Response.Failure("Permissions denied");
         }
 
         List<Account> list = [];
 
-        foreach (CreateAccount.AccountEntry entry in request.Entries)
+        // use linq
+        request.Accounts.Select(x => x.ToDomain());
+        foreach (CreateAccount.Account entry in request.Accounts)
         {
             list.Add(
                 new Account(
-                    AccountId.Default, // А норм ли выход? Просто в бд уже потом норм айди будет
+                    AccountId.Default, // А норм ли выход? Просто в бд уже потом норм айди будет - пройдет
                     entry.CardNumber,
                     entry.PinCode));
         }
 
         await _context.Accounts.AddOrUpdateAsync(list, cancellationToken);
+        // тк айдишники генерятся на стороне базы,
+        // стоит в это методе возвращать целиком аккаунты и уже их маппить
 
         await transaction.CommitAsync(cancellationToken);
 
@@ -264,4 +263,13 @@ internal class AccountService : IAccountService
 
         return new CheckHistory.Response.Success(operationList);
     }
-} // По ощущениям какой-то большой файл
+}
+
+
+public static class AccountMapper
+{
+    public static Account ToDomain(this CreateAccount.Account account)
+    {
+        return new Account();
+    }
+}

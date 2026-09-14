@@ -6,6 +6,8 @@ namespace Service.Infrastructure.Persistence.Migrations;
 [Migration(1784909608, "Operations")]
 public class AddOperations : SqlMigration
 {
+    // может появиться операция, которая хранит больше/меньше/другие данные
+    // использовать идею как с сессиями - хранить что-то в жсоне
     protected override string GetUpSql(IServiceProvider serviceProvider) =>
         """
         CREATE TYPE "operation_type" AS ENUM (
