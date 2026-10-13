@@ -8,6 +8,7 @@ using Service.Infrastructure.Persistence.Mapping;
 using Service.Infrastructure.Persistence.Models.Operation;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Service.Infrastructure.Persistence.Repositories;
@@ -75,28 +76,22 @@ internal sealed class OperationRepository : IOperationRepository
 
         while (await reader.ReadAsync(cancellationToken))
         {
-            // странно(или нет?)
-            switch (reader.GetString("type"))
+            yield return reader.GetString("type") switch
             {
-                case "withdraw":
-                    yield return new WithdrawOperation(
-                        new OperationId(reader.GetInt64("operation_id")),
-                        new AccountId(reader.GetInt64("account_id")),
-                        reader.GetDecimal("balance"));
-                    break;
-                case "deposit":
-                    yield return new DepositOperation(
-                        new OperationId(reader.GetInt64("operation_id")),
-                        new AccountId(reader.GetInt64("account_id")),
-                        reader.GetDecimal("balance"));
-                    break;
-                case "check_balance":
-                    yield return new CheckBalanceOperation(
-                        new OperationId(reader.GetInt64("operation_id")),
-                        new AccountId(reader.GetInt64("account_id")),
-                        reader.GetDecimal("balance"));
-                    break;
-            }
+                "withdraw" => new WithdrawOperation(
+                    new OperationId(reader.GetInt64("operation_id")),
+                    new AccountId(reader.GetInt64("account_id")),
+                    reader.GetDecimal("balance")),
+                "deposit" => new DepositOperation(
+                    new OperationId(reader.GetInt64("operation_id")),
+                    new AccountId(reader.GetInt64("account_id")),
+                    reader.GetDecimal("balance")),
+                "check_balance" => new CheckBalanceOperation(
+                    new OperationId(reader.GetInt64("operation_id")),
+                    new AccountId(reader.GetInt64("account_id")),
+                    reader.GetDecimal("balance")),
+                _ => throw new UnreachableException(),
+            };
         }
     }
 }
