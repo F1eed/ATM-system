@@ -4,9 +4,9 @@ namespace Service.Application.Contracts.Account.Operations;
 
 public static class CreateAccount
 {
-    public readonly record struct Request(Guid SessionId, IReadOnlyCollection<Account> Accounts);
+    public readonly record struct Request(Guid SessionId, IReadOnlyCollection<AccountEntry> Accounts);
 
-    public record Account(string CardNumber, string PinCode);
+    public record AccountEntry(string CardNumber, string PinCode);
 
     public abstract record Response
     {

@@ -5,7 +5,7 @@ namespace Service.Application.Abstractions.Persistence.Repositories;
 
 public interface IAccountRepository
 {
-    Task AddOrUpdateAsync(
+    IAsyncEnumerable<Account> AddOrUpdateAsync(
         IReadOnlyCollection<Account> accounts,
         CancellationToken cancellationToken);
 

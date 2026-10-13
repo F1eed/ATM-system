@@ -18,9 +18,9 @@ internal sealed class AccountRepository : IAccountRepository
         _connectionProvider = connectionProvider;
     }
 
-    public async Task AddOrUpdateAsync(
+    public async IAsyncEnumerable<Account> AddOrUpdateAsync(
         IReadOnlyCollection<Account> accounts,
-        CancellationToken cancellationToken)
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
         """
@@ -29,7 +29,8 @@ internal sealed class AccountRepository : IAccountRepository
         FROM unnest(:card_numbers, :pin_codes, :balances) AS source(card_number, pin_code, balance)
         ON CONFLICT ON CONSTRAINT unique_card_number DO UPDATE
         SET pin_code = excluded.pin_code,
-            balance = excluded.balance;
+            balance = excluded.balance
+        RETURNING account_id, card_number, pin_code, balance;
         """;
 
         await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
@@ -39,7 +40,16 @@ internal sealed class AccountRepository : IAccountRepository
             .AddParameter("pin_codes", accounts.Select(x => x.PinCode))
             .AddParameter("balances", accounts.Select(x => x.Balance));
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            yield return Account.CreateFromDb(
+                new AccountId(reader.GetInt64("account_id")),
+                reader.GetString("card_number"),
+                reader.GetString("pin_code"),
+                reader.GetDecimal("balance"));
+        }
     }
 
     public async IAsyncEnumerable<Account> QueryAsync(
@@ -66,7 +76,7 @@ internal sealed class AccountRepository : IAccountRepository
 
         while (await reader.ReadAsync(cancellationToken))
         {
-            yield return new Account(
+            yield return Account.CreateFromDb(
                 new AccountId(reader.GetInt64("account_id")),
                 reader.GetString("card_number"),
                 reader.GetString("pin_code"),

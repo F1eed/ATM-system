@@ -36,11 +36,13 @@ internal sealed class OperationRepository : IOperationRepository
            type = excluded.type
         """;
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using IPersistenceConnection connection = await _connectionProvider
+            .GetConnectionAsync(cancellationToken);
 
-        OperationDao[] operationDao = operations
-            .Select(operation => operation.MapToDao())
-            .ToArray();
+        OperationDao[] operationDao =
+        [
+            .. operations.Select(operation => operation.MapToDao())
+        ];
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
             .AddParameter("account_ids", operationDao.Select(dao => dao.AccountId))
@@ -63,7 +65,8 @@ internal sealed class OperationRepository : IOperationRepository
                            WHERE :account_id = account_id
                            """;
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using IPersistenceConnection connection = await _connectionProvider
+            .GetConnectionAsync(cancellationToken);
 
         await using IPersistenceCommand command = connection.CreateCommand(sql)
             .AddParameter("account_id", query.AccountId.Value);

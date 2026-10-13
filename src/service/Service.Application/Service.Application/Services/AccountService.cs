@@ -44,31 +44,14 @@ internal class AccountService : IAccountService
             return new CreateAccount.Response.Failure("Permissions denied");
         }
 
-        List<Account> list = [];
+        var list = request.Accounts.Select(x => x.MapToDomain()).ToList();
 
-        // use linq
-        request.Accounts.Select(x => x.ToDomain());
-        foreach (CreateAccount.Account entry in request.Accounts)
-        {
-            list.Add(
-                new Account(
-                    AccountId.Default, // А норм ли выход? Просто в бд уже потом норм айди будет - пройдет
-                    entry.CardNumber,
-                    entry.PinCode));
-        }
-
-        await _context.Accounts.AddOrUpdateAsync(list, cancellationToken);
-        // тк айдишники генерятся на стороне базы,
-        // стоит в это методе возвращать целиком аккаунты и уже их маппить
+        List<AccountDto> dtos = await _context.Accounts
+            .AddOrUpdateAsync(list, cancellationToken)
+            .Select(x => x.MapToDto())
+            .ToListAsync(cancellationToken: cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
-
-        List<AccountDto> dtos = [];
-
-        foreach (Account account in list)
-        {
-            dtos.Add(account.MapToDto());
-        }
 
         return new CreateAccount.Response.Success(dtos);
     }
@@ -106,12 +89,12 @@ internal class AccountService : IAccountService
         var operation = new CheckBalanceOperation(
             OperationId.Default,
             account.AccountId,
-            account.Balance);
+            account.Balance.Value);
 
         await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
         await transaction.CommitAsync(cancellationToken);
 
-        return new CheckBalance.Response.Success(account.Balance);
+        return new CheckBalance.Response.Success(account.Balance.Value);
     }
 
     public async Task<Deposit.Response> DepositAsync(
@@ -152,19 +135,20 @@ internal class AccountService : IAccountService
         var operation = new DepositOperation(
             OperationId.Default,
             account.AccountId,
-            account.Balance);
+            account.Balance.Value);
 
         await _context.Operations.AddOrUpdateAsync(
             [operation],
             cancellationToken);
 
-        await _context.Accounts.AddOrUpdateAsync(
-            [account],
-            cancellationToken);
+        AccountDto dto = await _context.Accounts
+            .AddOrUpdateAsync([account], cancellationToken)
+            .Select(x => x.MapToDto())
+            .FirstAsync(cancellationToken: cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 
-        return new Deposit.Response.Success(account.MapToDto());
+        return new Deposit.Response.Success(dto);
     }
 
     public async Task<Withdraw.Response> WithdrawAsync(
@@ -206,19 +190,20 @@ internal class AccountService : IAccountService
         var operation = new WithdrawOperation(
             OperationId.Default,
             account.AccountId,
-            account.Balance);
+            account.Balance.Value);
 
         await _context.Operations.AddOrUpdateAsync(
             [operation],
             cancellationToken);
 
-        await _context.Accounts.AddOrUpdateAsync(
-            [account],
-            cancellationToken);
+        AccountDto dto = await _context.Accounts
+            .AddOrUpdateAsync([account], cancellationToken)
+            .Select(x => x.MapToDto())
+            .FirstAsync(cancellationToken: cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 
-        return new Withdraw.Response.Success(account.MapToDto());
+        return new Withdraw.Response.Success(dto);
     }
 
     public async Task<CheckHistory.Response> CheckHistoryAsync(
@@ -246,12 +231,6 @@ internal class AccountService : IAccountService
         IAsyncEnumerable<OperationBase> operations = _context.Operations
             .QueryAsync(operationBuilder, cancellationToken);
 
-        // Possible multiple enumeration??
-        if (await operations.CountAsync(cancellationToken: cancellationToken) == 0)
-        {
-            return new CheckHistory.Response.Success([]);
-        }
-
         List<OperationDto> operationList = [];
 
         await foreach (OperationBase operation in operations)
@@ -262,14 +241,5 @@ internal class AccountService : IAccountService
         await transaction.CommitAsync(cancellationToken);
 
         return new CheckHistory.Response.Success(operationList);
-    }
-}
-
-
-public static class AccountMapper
-{
-    public static Account ToDomain(this CreateAccount.Account account)
-    {
-        return new Account();
     }
 }

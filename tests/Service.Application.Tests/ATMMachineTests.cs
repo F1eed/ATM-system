@@ -21,7 +21,7 @@ public class ATMMachineTests
         IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
         ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
         IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
-        var account = new Account(
+        var account = Account.CreateNew(
             new AccountId(5),
             "1488",
             "239");
@@ -44,6 +44,11 @@ public class ATMMachineTests
         context.Accounts.Returns(accountRepository);
         context.Operations.Returns(operationRepository);
         context.Sessions.Returns(sessionRepository);
+        context.Accounts.AddOrUpdateAsync(
+                Arg.Any<IReadOnlyCollection<Account>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account])
+                .ToAsyncEnumerable());
 
         IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
 
@@ -66,7 +71,7 @@ public class ATMMachineTests
 
         // Assert
         Assert.IsType<Withdraw.Response.Success>(response);
-        Assert.Equal(700m, account.Balance);
+        Assert.Equal(700m, account.Balance.Value);
     }
 
     [Fact]
@@ -76,7 +81,7 @@ public class ATMMachineTests
         IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
         ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
         IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
-        var account = new Account(
+        var account = Account.CreateNew(
             new AccountId(5),
             "1488",
             "239");
@@ -122,7 +127,7 @@ public class ATMMachineTests
 
         // Assert
         Assert.IsType<Withdraw.Response.Failure>(response);
-        Assert.Equal(1000m, account.Balance);
+        Assert.Equal(1000m, account.Balance.Value);
     }
 
     [Fact]
@@ -132,7 +137,7 @@ public class ATMMachineTests
         IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
         ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
         IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
-        var account = new Account(
+        var account = Account.CreateNew(
             new AccountId(5),
             "1488",
             "239");
@@ -153,6 +158,11 @@ public class ATMMachineTests
         context.Accounts.Returns(accountRepository);
         context.Operations.Returns(operationRepository);
         context.Sessions.Returns(sessionRepository);
+        context.Accounts.AddOrUpdateAsync(
+                Arg.Any<IReadOnlyCollection<Account>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account])
+                .ToAsyncEnumerable());
 
         IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
 
@@ -175,7 +185,7 @@ public class ATMMachineTests
 
         // Assert
         Assert.IsType<Deposit.Response.Success>(response);
-        Assert.Equal(1000m, account.Balance);
+        Assert.Equal(1000m, account.Balance.Value);
     }
 
     [Fact]
@@ -185,7 +195,7 @@ public class ATMMachineTests
         IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
         ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
         IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
-        var account = new Account(
+        var account = Account.CreateNew(
             new AccountId(5),
             "1488",
             "239");
@@ -228,6 +238,6 @@ public class ATMMachineTests
 
         // Assert
         Assert.IsType<Deposit.Response.Failure>(response);
-        Assert.Equal(0m, account.Balance);
+        Assert.Equal(0m, account.Balance.Value);
     }
 }

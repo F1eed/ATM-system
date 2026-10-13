@@ -2,18 +2,35 @@ namespace Service.Application.Model.Accounts;
 
 public class Account
 {
-    // TODO: можно сделать конструктор приватным и сделать 2 публичный статик метода CreateNew и CreateFromDb
-    // у которых уже будут разные аргументы
-    public Account(
+    private const decimal ZeroBalance = 0m;
+
+    private Account(
         AccountId accountId,
         string cardNumber,
         string pinCode,
-        decimal balance = 0) // пришлось сюда добавить баланс(поговорить бы об этом)
+        decimal balance)
     {
         AccountId = accountId;
         CardNumber = cardNumber;
         PinCode = pinCode;
-        Balance = balance;
+        Balance = new Money(balance);
+    }
+
+    public static Account CreateNew(
+        AccountId accountId,
+        string cardNumber,
+        string pinCode)
+    {
+        return new Account(accountId, cardNumber, pinCode, ZeroBalance);
+    }
+
+    public static Account CreateFromDb(
+        AccountId accountId,
+        string cardNumber,
+        string pinCode,
+        decimal balance)
+    {
+        return new Account(accountId, cardNumber, pinCode, balance);
     }
 
     public AccountId AccountId { get; }
@@ -22,12 +39,11 @@ public class Account
 
     public string PinCode { get; }
 
-    // TODO: vo для денег
-    public decimal Balance { get; private set; }
+    public Money Balance { get; private set; }
 
     public bool TryWithdraw(decimal amount)
     {
-        if (amount <= 0 || amount > Balance)
+        if (amount <= 0 || amount > Balance.Value)
         {
             return false;
         }
