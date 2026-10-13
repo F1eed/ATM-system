@@ -17,8 +17,8 @@ public class AddOperations : SqlMigration
         );
         
         CREATE TABLE "operations" (
-          "operation_id" bigint not null PRIMARY KEY,
-          "account_id" bigint not null,
+          "operation_id" bigserial not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+          "account_id" bigserial not null,
           "balance" decimal not null,
           "type" operation_type not null
         );

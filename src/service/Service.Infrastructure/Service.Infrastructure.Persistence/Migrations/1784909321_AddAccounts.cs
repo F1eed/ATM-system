@@ -6,15 +6,13 @@ namespace Service.Infrastructure.Persistence.Migrations;
 [Migration(1784909321, "Accounts")]
 public class AddAccounts : SqlMigration
 {
-    // TODO: дефолт 0 у баланса будто лишний, аккаунт айди не бигинт, а бигсериал - касается всех айдишников
-    // добавиьт юник на номер карты
     protected override string GetUpSql(IServiceProvider serviceProvider) =>
         """
         CREATE TABLE accounts (
-          account_id bigint not null PRIMARY KEY,
-          card_number varchar(16) not null CHECK (length(card_number) = 16),
+          account_id bigserial not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+          card_number varchar(16) not null CHECK (length(card_number) = 16) UNIQUE,
           pin_code varchar(4) not null CHECK (length(pin_code) = 4),
-          balance decimal default 0
+          balance decimal
         );
         """;
 
