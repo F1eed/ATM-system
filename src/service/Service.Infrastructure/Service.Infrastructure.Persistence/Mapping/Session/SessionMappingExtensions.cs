@@ -3,7 +3,7 @@ using Service.Application.Model.Sessions;
 using Service.Infrastructure.Persistence.Models.Session;
 using System.Diagnostics;
 
-namespace Service.Infrastructure.Persistence.Mapping;
+namespace Service.Infrastructure.Persistence.Mapping.Session;
 
 public static class SessionMappingExtensions
 {

@@ -3,7 +3,7 @@ using Itmo.Dev.Platform.Persistence.Abstractions.Connections;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Abstractions.Persistence.Repositories;
 using Service.Application.Model.Sessions;
-using Service.Infrastructure.Persistence.Mapping;
+using Service.Infrastructure.Persistence.Mapping.Session;
 using Service.Infrastructure.Persistence.Models.Session;
 using System.Data;
 using System.Data.Common;
