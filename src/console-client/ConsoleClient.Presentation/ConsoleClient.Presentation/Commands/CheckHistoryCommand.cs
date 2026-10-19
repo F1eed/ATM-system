@@ -36,12 +36,20 @@ public class CheckHistoryCommand : AsyncCommand
         if (result is CheckHistory.Result.Success success)
         {
             Table table = new Table()
+                .AddColumn("Occured at")
                 .AddColumn("Operation type")
-                .AddColumn("Balance");
+                .AddColumn("Amount")
+                .AddColumn("Remaining Balance");
 
             foreach (OperationDto dto in success.OperationDtos)
             {
-                table.AddRow(dto.Type, dto.Balance.ToString(CultureInfo.InvariantCulture));
+                table.AddRow(
+                    dto.OccuredAt.ToLocalTime().ToString(
+                        "yyyy.MM.dd HH:mm:ss tt",
+                        CultureInfo.CurrentCulture),
+                    dto.Type,
+                    dto.Amount?.ToString(CultureInfo.InvariantCulture) ?? "—",
+                    dto.Balance.ToString(CultureInfo.InvariantCulture));
             }
 
             AnsiConsole.Write(table);

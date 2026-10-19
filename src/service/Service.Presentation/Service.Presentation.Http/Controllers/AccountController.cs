@@ -35,12 +35,11 @@ public sealed class AccountController : ControllerBase
 
         return response switch
         {
-            CreateAccount.Response.Success success => Ok(new CreateAccountResponse(
-                success.Accounts
-                    .Select(dto => new AccountEntry(
-                        dto.CardNumber,
-                        dto.Balance))
-                    .ToList())),
+            CreateAccount.Response.Success success => Ok(
+                new CreateAccountResponse(
+                    success.Accounts
+                        .Select(dto => dto.CardNumber)
+                        .ToList())),
             CreateAccount.Response.Failure failure => Unauthorized(failure.Error),
             _ => throw new UnreachableException(),
         };
@@ -61,8 +60,9 @@ public sealed class AccountController : ControllerBase
         return response switch
         {
             Deposit.Response.Success success => Ok(
-                new DepositResponse(new AccountEntry(
+                new DepositResponse(new DepositResponse.AccountEntry(
                     success.Account.CardNumber,
+                    httpRequest.Amount,
                     success.Account.Balance))),
             Deposit.Response.NotUserSession => Unauthorized(),
             Deposit.Response.Failure failure => BadRequest(failure.Error),
@@ -85,8 +85,9 @@ public sealed class AccountController : ControllerBase
         return response switch
         {
             Withdraw.Response.Success success => Ok(new WithdrawResponse(
-                new AccountEntry(
+                new WithdrawResponse.AccountEntry(
                     success.Account.CardNumber,
+                    httpRequest.Amount,
                     success.Account.Balance))),
             Withdraw.Response.NotUserSession => Unauthorized(),
             Withdraw.Response.Failure failure => BadRequest(failure.Message),
@@ -94,7 +95,6 @@ public sealed class AccountController : ControllerBase
         };
     }
 
-    // чёт странно что апи с аккаунтом связано, но требует sessionId(отмена, там по условию так в 5ой лабе)
     [HttpGet("{sessionId}/balance")]
     public async Task<ActionResult<CheckBalanceResponse>> CheckAccountBalanceAsync(
         [FromRoute] Guid sessionId,

@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection collection)
     {
         collection.AddOptions<SessionServiceOptions>()
-            .BindConfiguration("Application:Sessions");
+            .BindConfiguration("Application:Sessions:SessionServiceOptions");
 
         collection.AddScoped<ISessionService, SessionService>();
         collection.AddScoped<IAccountService, AccountService>();

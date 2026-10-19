@@ -3,6 +3,7 @@ using Itmo.Dev.Platform.Persistence.Postgres.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Repositories;
+using Service.Infrastructure.Persistence.Factories;
 using Service.Infrastructure.Persistence.Repositories;
 
 namespace Service.Infrastructure.Persistence;
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
                 .WithConnectionOptions(builder => builder.BindConfiguration(
                     "Infrastructure:Persistence:Postgres"))
                 .WithMigrationsFrom(typeof(IAssemblyMarker).Assembly)));
+
+        collection.AddSingleton(OperationChainFactory.Create());
 
         collection.AddScoped<IPersistenceContext, PersistenceContext>();
 

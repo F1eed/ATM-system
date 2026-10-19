@@ -32,7 +32,7 @@ internal class SessionService : ISessionService
         CreateAdminSession.Request request,
         CancellationToken cancellationToken)
     {
-        // посмотреть что такое Options
+        // посмотреть что такое Options -> ??
         if (request.Password != _options.Password)
         {
             return new CreateAdminSession.Response.Failure("Incorrect Password");
@@ -42,7 +42,7 @@ internal class SessionService : ISessionService
                 IsolationLevel.ReadCommitted,
                 cancellationToken);
 
-        var adminSession = new AdminSession();
+        var adminSession = AdminSession.CreateNew();
 
         await _context.Sessions.AddOrUpdateAsync(
             adminSession,
@@ -78,7 +78,7 @@ internal class SessionService : ISessionService
             return new CreateUserSession.Response.Failure("Invalid pin");
         }
 
-        var session = new UserSession(account.AccountId);
+        var session = UserSession.CreateNew(account.AccountId);
 
         await _context.Sessions.AddOrUpdateAsync(
             session,

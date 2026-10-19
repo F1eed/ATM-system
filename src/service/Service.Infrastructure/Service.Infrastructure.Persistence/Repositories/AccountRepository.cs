@@ -27,7 +27,7 @@ internal sealed class AccountRepository : IAccountRepository
         INSERT INTO accounts (card_number, pin_code, balance)
         SELECT source.card_number, source.pin_code, source.balance
         FROM unnest(:card_numbers, :pin_codes, :balances) AS source(card_number, pin_code, balance)
-        ON CONFLICT ON CONSTRAINT unique_card_number DO UPDATE
+        ON CONFLICT ON CONSTRAINT accounts_card_number_key DO UPDATE
         SET pin_code = excluded.pin_code,
             balance = excluded.balance
         RETURNING account_id, card_number, pin_code, balance;
@@ -38,7 +38,7 @@ internal sealed class AccountRepository : IAccountRepository
         await using IPersistenceCommand command = connection.CreateCommand(sql)
             .AddParameter("card_numbers", accounts.Select(x => x.CardNumber))
             .AddParameter("pin_codes", accounts.Select(x => x.PinCode))
-            .AddParameter("balances", accounts.Select(x => x.Balance));
+            .AddParameter("balances", accounts.Select(x => x.Balance.Value));
 
         DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 

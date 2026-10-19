@@ -1,6 +1,7 @@
+name: atm-service
+
 services:
   postgres:
-    container_name: postgres1
     image: postgres:latest
     ports:
       - "5432:5432"

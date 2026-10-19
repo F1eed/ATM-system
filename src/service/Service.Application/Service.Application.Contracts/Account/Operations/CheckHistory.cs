@@ -10,9 +10,9 @@ public static class CheckHistory
     {
         private Response() { }
 
-        public sealed record Success(IReadOnlyCollection<OperationDto> Operations) : Response;
+        public sealed record Success(IReadOnlyCollection<BaseOperationDto> Operations) : Response;
 
-        public sealed record NotUserSession() : Response;
+        public sealed record NotUserSession : Response;
 
         public sealed record Failure(string Message) : Response;
     }

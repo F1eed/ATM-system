@@ -4,23 +4,23 @@ namespace ConsoleClient.Application.Abstractions.Account;
 
 public interface IAccountClient
 {
-    Task<CreateAccount.Result> CreateAccountAsync(
-        CreateAccount.Request request,
+    Task<ServiceCreateAccount.Result> CreateAccountAsync(
+        ServiceCreateAccount.Request request,
         CancellationToken cancellationToken);
 
-    Task<Deposit.Result> DepositAsync(
-        Deposit.Request request,
+    Task<ServiceDeposit.Result> DepositAsync(
+        ServiceDeposit.Request request,
         CancellationToken cancellationToken);
 
-    Task<Withdraw.Result> WithdrawAsync(
-        Withdraw.Request request,
+    Task<ServiceWithdraw.Result> WithdrawAsync(
+        ServiceWithdraw.Request request,
         CancellationToken cancellationToken);
 
-    Task<CheckBalance.Result> CheckBalanceAsync(
-        CheckBalance.Request request,
+    Task<ServiceCheckBalance.Result> CheckBalanceAsync(
+        ServiceCheckBalance.Request request,
         CancellationToken cancellationToken);
 
-    Task<CheckHistory.Result> CheckHistoryAsync(
-        CheckHistory.Request request,
+    Task<ServiceCheckHistory.Result> CheckHistoryAsync(
+        ServiceCheckHistory.Request request,
         CancellationToken cancellationToken);
 }

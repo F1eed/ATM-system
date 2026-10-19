@@ -4,11 +4,11 @@ namespace ConsoleClient.Application.Abstractions.Session;
 
 public interface ISessionClient
 {
-    Task<CreateAdminSession.Result> CreateAdminSessionAsync(
-        CreateAdminSession.Request request,
+    Task<ServiceCreateAdminSession.Result> CreateAdminSessionAsync(
+        ServiceCreateAdminSession.Request request,
         CancellationToken cancellationToken);
 
-    Task<CreateUserSession.Result> CreateUserSessionAsync(
-        CreateUserSession.Request request,
+    Task<ServiceCreateUserSession.Result> CreateUserSessionAsync(
+        ServiceCreateUserSession.Request request,
         CancellationToken cancellationToken);
 }

@@ -26,7 +26,7 @@ public class ATMMachineTests
             "1488",
             "239");
 
-        var session = new UserSession(account.AccountId);
+        var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
             Arg.Any<SessionQuery>(),
@@ -86,7 +86,7 @@ public class ATMMachineTests
             "1488",
             "239");
 
-        var session = new UserSession(account.AccountId);
+        var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
             Arg.Any<SessionQuery>(),
@@ -142,7 +142,7 @@ public class ATMMachineTests
             "1488",
             "239");
 
-        var session = new UserSession(account.AccountId);
+        var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
             Arg.Any<SessionQuery>(),
@@ -200,7 +200,7 @@ public class ATMMachineTests
             "1488",
             "239");
 
-        var session = new UserSession(account.AccountId);
+        var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
             Arg.Any<SessionQuery>(),

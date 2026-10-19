@@ -3,6 +3,9 @@ using Itmo.Dev.Platform.Persistence.Abstractions.Connections;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Abstractions.Persistence.Repositories;
 using Service.Application.Model.Sessions;
+using Service.Infrastructure.Persistence.Mapping;
+using Service.Infrastructure.Persistence.Models.Session;
+using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -33,8 +36,10 @@ internal sealed class SessionRepository : ISessionRepository
         await using IPersistenceConnection connection = await _connectionProvider
             .GetConnectionAsync(cancellationToken);
 
+        SessionModel dbModel = session.ToDbModel();
+
         await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("data", JsonSerializer.Serialize(session))
+            .AddParameter("data", JsonSerializer.Serialize(dbModel))
             .AddParameter("id", session.SessionId);
 
         await command.ExecuteNonQueryAsync(cancellationToken);
@@ -62,9 +67,14 @@ internal sealed class SessionRepository : ISessionRepository
 
         while (await reader.ReadAsync(cancellationToken))
         {
-            ISession? session = JsonSerializer.Deserialize<ISession>(
-                reader.GetString(reader.GetOrdinal("session_data")));
-            if (session != null) yield return session; // чет такое как будто 2/10
+            SessionModel dbModel =
+                JsonSerializer.Deserialize<SessionModel>(
+                    await reader.GetFieldValueAsync<string>(
+                        "session_data",
+                        cancellationToken: cancellationToken))
+                ?? throw new InvalidOperationException("Undefined type of session data");
+
+            yield return dbModel.ToDomain();
         }
     }
 }

@@ -6,10 +6,10 @@ namespace Service.Application.Abstractions.Persistence.Repositories;
 public interface IOperationRepository
 {
     Task AddOrUpdateAsync(
-        IReadOnlyCollection<OperationBase> operations,
+        IReadOnlyCollection<IOperation> operations,
         CancellationToken cancellationToken);
 
-    IAsyncEnumerable<OperationBase> QueryAsync(
+    IAsyncEnumerable<IOperation> QueryAsync(
         OperationQuery query,
         CancellationToken cancellationToken);
 }

@@ -15,8 +15,8 @@ public class SessionClient : ISessionClient
         _client = client;
     }
 
-    public async Task<CreateAdminSession.Result> CreateAdminSessionAsync(
-        CreateAdminSession.Request request,
+    public async Task<ServiceCreateAdminSession.Result> CreateAdminSessionAsync(
+        ServiceCreateAdminSession.Request request,
         CancellationToken cancellationToken)
     {
         var httpRequest = new CreateAdminRequest(request.Password);
@@ -28,15 +28,15 @@ public class SessionClient : ISessionClient
         // я не уверен норм ли поле такое брать и не обрабатывать IsSuccessful
         if (response.IsSuccessfulWithContent is false)
         {
-            return new CreateAdminSession.Result.Failure(response.ReasonPhrase ?? string.Empty);
+            return new ServiceCreateAdminSession.Result.Failure(response.ReasonPhrase ?? string.Empty);
         }
 
-        return new CreateAdminSession.Result.Success(
+        return new ServiceCreateAdminSession.Result.Success(
             new Session(response.Content.Id));
     }
 
-    public async Task<CreateUserSession.Result> CreateUserSessionAsync(
-        CreateUserSession.Request request,
+    public async Task<ServiceCreateUserSession.Result> CreateUserSessionAsync(
+        ServiceCreateUserSession.Request request,
         CancellationToken cancellationToken)
     {
         var httpRequest = new CreateUserRequest(
@@ -48,9 +48,9 @@ public class SessionClient : ISessionClient
             cancellationToken);
 
         if (response.IsSuccessfulWithContent is false)
-            return new CreateUserSession.Result.Failure(response.ReasonPhrase ?? string.Empty);
+            return new ServiceCreateUserSession.Result.Failure(response.ReasonPhrase ?? string.Empty);
 
-        return new CreateUserSession.Result.Success(
+        return new ServiceCreateUserSession.Result.Success(
             new Session(response.Content.Id));
     }
 }

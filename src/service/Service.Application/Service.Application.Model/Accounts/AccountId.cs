@@ -8,7 +8,7 @@ public readonly record struct AccountId
 
     public AccountId(long value)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        ArgumentOutOfRangeException.ThrowIfNegative(value);
         Value = value;
     }
 }

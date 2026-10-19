@@ -4,13 +4,17 @@ namespace Service.Application.Model.Sessions;
 
 public class UserSession : ISession
 {
-    public UserSession(AccountId accountId)
+    private UserSession(AccountId accountId, Guid sessionId)
     {
-        SessionId = Guid.NewGuid();
+        SessionId = sessionId;
         AccountId = accountId;
     }
 
     public Guid SessionId { get; }
 
     public AccountId AccountId { get; }
+
+    public static UserSession CreateNew(AccountId accountId) => new(accountId, Guid.NewGuid());
+
+    public static UserSession CreateFromDb(AccountId accountId, Guid sessionId) => new(accountId, sessionId);
 }

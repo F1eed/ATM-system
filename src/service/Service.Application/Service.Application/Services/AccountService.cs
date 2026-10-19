@@ -87,9 +87,10 @@ internal class AccountService : IAccountService
         }
 
         var operation = new CheckBalanceOperation(
+            new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            account.Balance.Value);
+            account.Balance);
 
         await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
         await transaction.CommitAsync(cancellationToken);
@@ -133,13 +134,13 @@ internal class AccountService : IAccountService
         }
 
         var operation = new DepositOperation(
+            new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            account.Balance.Value);
+            new Money(request.Amount),
+            account.Balance);
 
-        await _context.Operations.AddOrUpdateAsync(
-            [operation],
-            cancellationToken);
+        await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
 
         AccountDto dto = await _context.Accounts
             .AddOrUpdateAsync([account], cancellationToken)
@@ -188,13 +189,14 @@ internal class AccountService : IAccountService
         }
 
         var operation = new WithdrawOperation(
+            new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            account.Balance.Value);
+            new Money(request.Amount),
+            account.Balance);
 
-        await _context.Operations.AddOrUpdateAsync(
-            [operation],
-            cancellationToken);
+        await _context.Operations
+            .AddOrUpdateAsync([operation], cancellationToken);
 
         AccountDto dto = await _context.Accounts
             .AddOrUpdateAsync([account], cancellationToken)
@@ -228,12 +230,12 @@ internal class AccountService : IAccountService
 
         var operationBuilder = OperationQuery.Build(builder => builder.WithAccountId(userSession.AccountId));
 
-        IAsyncEnumerable<OperationBase> operations = _context.Operations
+        IAsyncEnumerable<IOperation> operations = _context.Operations
             .QueryAsync(operationBuilder, cancellationToken);
 
-        List<OperationDto> operationList = [];
+        List<BaseOperationDto> operationList = [];
 
-        await foreach (OperationBase operation in operations)
+        await foreach (IOperation operation in operations)
         {
             operationList.Add(operation.MapToDto());
         }

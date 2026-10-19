@@ -1,22 +1,52 @@
 using Service.Application.Contracts.Operation.Models;
 using Service.Application.Model.Operations;
+using System.Diagnostics;
 
 namespace Service.Application.Mapping;
 
 public static class OperationMappingExtensions
 {
-    public static OperationTypeDto MapToDto(this OperationType type) => type switch
+    public static BaseOperationDto MapToDto(this IOperation operation)
     {
-        OperationType.CheckBalance => OperationTypeDto.CheckBalance,
-        OperationType.Deposit => OperationTypeDto.Deposit,
-        OperationType.Withdraw => OperationTypeDto.Withdraw,
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
-    };
+        return operation switch
+        {
+            CheckBalanceOperation checkBalanceOperation =>
+                checkBalanceOperation.MapToDto(),
+            WithdrawOperation withdrawOperation =>
+                withdrawOperation.MapToDto(),
+            DepositOperation depositOperation =>
+                depositOperation.MapToDto(),
+            _ => throw new UnreachableException(
+                $"mapping for type {operation.GetType().Name} is not implementing"),
+        };
+    }
 
-    public static OperationDto MapToDto(this OperationBase operation)
-        => new OperationDto(
+    private static CheckBalanceOperationDto MapToDto(this CheckBalanceOperation operation)
+    {
+        return new CheckBalanceOperationDto(
             operation.OperationId.Value,
             operation.AccountId.Value,
-            operation.Type.MapToDto(),
-            operation.Balance);
+            operation.OccuredAt.Value,
+            operation.Balance.Value);
+    }
+
+    private static WithdrawOperationDto MapToDto(this WithdrawOperation operation)
+    {
+        return new WithdrawOperationDto(
+            operation.OperationId.Value,
+            operation.AccountId.Value,
+            operation.OccuredAt.Value,
+            operation.Amount.Value,
+            operation.RemainingBalance.Value);
+    }
+
+    private static DepositOperationDto MapToDto(this DepositOperation operation)
+    {
+        return new DepositOperationDto(
+            operation.OperationId.Value,
+            operation.AccountId.Value,
+            operation.OccuredAt.Value,
+            operation.Amount.Value,
+            operation.RemainingBalance.Value);
+    }
 }

@@ -63,7 +63,7 @@ public class CreateAccountCommand : AsyncCommand
 
         if (result is CreateAccount.Result.Failure failure)
         {
-            AnsiConsole.MarkupLine($"[red]Error: {failure.ErrorMessage}[/]");
+            AnsiConsole.MarkupLine($"""[red]Error: {failure.ErrorMessage}[/]""");
             return 1;
         }
 
