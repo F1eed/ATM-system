@@ -1,8 +1,8 @@
 namespace ConsoleClient.Application.Abstractions.Session.Operations;
 
-public static class CreateAdminSession
+public static class ServiceCreateUserSession
 {
-    public readonly record struct Request(string Password);
+    public readonly record struct Request(string CardNumber, string PinCode);
 
     public abstract record Result
     {

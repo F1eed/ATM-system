@@ -1,6 +1,6 @@
 namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
-public static class CreateAccount
+public static class ServiceCreateAccount
 {
     public readonly record struct Request(
         Guid SessionId,

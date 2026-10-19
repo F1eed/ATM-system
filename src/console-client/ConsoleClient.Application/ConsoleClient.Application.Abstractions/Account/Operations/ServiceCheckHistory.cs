@@ -2,7 +2,7 @@ using ConsoleClient.Application.Model;
 
 namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
-public class CheckHistory
+public static class ServiceCheckHistory
 {
     public readonly record struct Request(Guid SessionId);
 

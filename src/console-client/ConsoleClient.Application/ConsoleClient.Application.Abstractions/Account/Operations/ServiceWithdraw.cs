@@ -1,6 +1,6 @@
 namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
-public static class Withdraw
+public static class ServiceWithdraw
 {
     public readonly record struct Request(Guid SessionId, decimal Amount);
 
