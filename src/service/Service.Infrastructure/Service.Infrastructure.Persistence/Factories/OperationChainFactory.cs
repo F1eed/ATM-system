@@ -6,10 +6,11 @@ public static class OperationChainFactory
 {
     public static IOperationLink Create()
     {
-        var head = new CheckBalanceOperationLink();
+        var head = new DefaultOperationLink();
 
         head.Add(new WithdrawOperationLink())
-            .Add(new DepositOperationLink());
+            .Add(new DepositOperationLink())
+            .Add(new CheckBalanceOperationLink());
 
         return head;
     }
