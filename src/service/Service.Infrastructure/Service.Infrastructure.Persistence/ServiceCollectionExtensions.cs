@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
 
         collection
             .AddFluentMigratorCore()
-            .ConfigureRunner(runner => runner
+            .ConfigureRunner(runnerBuilder => runnerBuilder
                 .AddPostgres()
                 .WithGlobalConnectionString(connectionString)
                 .WithMigrationsIn(typeof(IAssemblyMarker).Assembly))
