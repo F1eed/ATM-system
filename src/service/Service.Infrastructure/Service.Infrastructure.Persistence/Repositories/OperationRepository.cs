@@ -39,10 +39,10 @@ internal sealed class OperationRepository : IOperationRepository
 
         await using var command = new NpgsqlCommand(sql, connection);
         command.Parameters.Add(new NpgsqlParameter("occured_ats", operations
-            .Select(operation => operation.OccuredAt.Value)));
+            .Select(operation => operation.OccuredAt.Value).ToList()));
         command.Parameters.Add(new NpgsqlParameter("account_ids", operations
-            .Select(operation => operation.AccountId.Value)));
-        command.Parameters.Add(new NpgsqlParameter("datas", operations.Select(MapOperationToJson)));
+            .Select(operation => operation.AccountId.Value).ToList()));
+        command.Parameters.Add(new NpgsqlParameter("datas", operations.Select(MapOperationToJson).ToList()));
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }

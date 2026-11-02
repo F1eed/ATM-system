@@ -35,9 +35,12 @@ internal sealed class AccountRepository : IAccountRepository
         await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 
         await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.Add(new NpgsqlParameter("card_numbers", accounts.Select(x => x.CardNumber)));
-        command.Parameters.Add(new NpgsqlParameter("pin_codes", accounts.Select(x => x.PinCode)));
-        command.Parameters.Add(new NpgsqlParameter("balances", accounts.Select(x => x.Balance.Value)));
+        command.Parameters.Add(
+            new NpgsqlParameter("card_numbers", accounts.Select(x => x.CardNumber).ToList()));
+        command.Parameters.Add(
+            new NpgsqlParameter("pin_codes", accounts.Select(x => x.PinCode).ToList()));
+        command.Parameters.Add(
+            new NpgsqlParameter("balances", accounts.Select(x => x.Balance.Value).ToList()));
 
         DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
