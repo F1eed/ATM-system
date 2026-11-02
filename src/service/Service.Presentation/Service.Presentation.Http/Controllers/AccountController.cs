@@ -60,7 +60,7 @@ public sealed class AccountController : ControllerBase
         return response switch
         {
             Deposit.Response.Success success => Ok(
-                new DepositResponse(new DepositResponse.AccountEntry(
+                new DepositResponse(new DepositResponse.DepositAccountEntry(
                     success.Account.CardNumber,
                     httpRequest.Amount,
                     success.Account.Balance))),
@@ -85,7 +85,7 @@ public sealed class AccountController : ControllerBase
         return response switch
         {
             Withdraw.Response.Success success => Ok(new WithdrawResponse(
-                new WithdrawResponse.AccountEntry(
+                new WithdrawResponse.WithdrawAccountEntry(
                     success.Account.CardNumber,
                     httpRequest.Amount,
                     success.Account.Balance))),

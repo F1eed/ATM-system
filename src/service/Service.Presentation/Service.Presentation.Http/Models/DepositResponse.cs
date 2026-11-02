@@ -1,8 +1,8 @@
 namespace Service.Presentation.Http.Models;
 
-public sealed record DepositResponse(DepositResponse.AccountEntry Entry)
+public sealed record DepositResponse(DepositResponse.DepositAccountEntry Entry)
 {
-    public sealed record AccountEntry(
+    public sealed record DepositAccountEntry(
         string CardNumber,
         decimal Amount,
         decimal Balance);
