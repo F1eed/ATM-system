@@ -1,6 +1,6 @@
-using Itmo.Dev.Platform.Persistence.Abstractions.Transactions;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Queries;
+using Service.Application.Abstractions.Persistence.Transactions;
 using Service.Application.Contracts.Account;
 using Service.Application.Contracts.Account.Models;
 using Service.Application.Contracts.Account.Operations;
@@ -9,7 +9,6 @@ using Service.Application.Mapping;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Operations;
 using Service.Application.Model.Sessions;
-using System.Data;
 
 namespace Service.Application.Services;
 
@@ -30,11 +29,6 @@ internal class AccountService : IAccountService
     {
         var builder = SessionQuery.Build(builder => builder.WithId(request.SessionId));
 
-        await using IPersistenceTransaction transaction = await _transactionProvider
-            .BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
-                cancellationToken);
-
         ISession? session = await _context.Sessions
             .QueryAsync(builder, cancellationToken)
             .SingleOrDefaultAsync(cancellationToken: cancellationToken);
@@ -51,8 +45,6 @@ internal class AccountService : IAccountService
             .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken: cancellationToken);
 
-        await transaction.CommitAsync(cancellationToken);
-
         return new CreateAccount.Response.Success(dtos);
     }
 
@@ -61,11 +53,6 @@ internal class AccountService : IAccountService
         CancellationToken cancellationToken)
     {
         var sessionBuilder = SessionQuery.Build(builder => builder.WithId(request.SessionId));
-
-        await using IPersistenceTransaction transaction = await _transactionProvider
-            .BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
-                cancellationToken);
 
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
@@ -93,7 +80,6 @@ internal class AccountService : IAccountService
             account.Balance);
 
         await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
-        await transaction.CommitAsync(cancellationToken);
 
         return new CheckBalance.Response.Success(account.Balance.Value);
     }
@@ -106,7 +92,7 @@ internal class AccountService : IAccountService
 
         await using IPersistenceTransaction transaction = await _transactionProvider
             .BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
+                System.Transactions.IsolationLevel.ReadCommitted,
                 cancellationToken);
 
         ISession? session = await _context.Sessions
@@ -160,7 +146,7 @@ internal class AccountService : IAccountService
 
         await using IPersistenceTransaction transaction = await _transactionProvider
             .BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
+                System.Transactions.IsolationLevel.ReadCommitted,
                 cancellationToken);
 
         ISession? session = await _context.Sessions
@@ -214,11 +200,6 @@ internal class AccountService : IAccountService
     {
         var sessionBuilder = SessionQuery.Build(builder => builder.WithId(request.SessionId));
 
-        await using IPersistenceTransaction transaction = await _transactionProvider
-            .BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
-                cancellationToken);
-
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
             .SingleOrDefaultAsync(cancellationToken: cancellationToken);
@@ -239,8 +220,6 @@ internal class AccountService : IAccountService
         {
             operationList.Add(operation.MapToDto());
         }
-
-        await transaction.CommitAsync(cancellationToken);
 
         return new CheckHistory.Response.Success(operationList);
     }

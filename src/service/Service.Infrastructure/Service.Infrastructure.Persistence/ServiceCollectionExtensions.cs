@@ -3,9 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Repositories;
+using Service.Application.Abstractions.Persistence.Transactions;
 using Service.Infrastructure.Persistence.Factories;
 using Service.Infrastructure.Persistence.Options;
 using Service.Infrastructure.Persistence.Repositories;
+using Service.Infrastructure.Persistence.Transactions;
 
 namespace Service.Infrastructure.Persistence;
 
@@ -42,6 +44,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(OperationChainFactory.Create());
 
         collection.AddScoped<IPersistenceContext, PersistenceContext>();
+        collection.AddScoped<IPersistenceTransactionProvider, PostgresPersistenceTransactionProvider>();
+        collection.AddScoped<IPersistenceTransaction, PostgresPersistenceTransaction>();
 
         collection.AddScoped<IAccountRepository, AccountRepository>();
         collection.AddScoped<IOperationRepository, OperationRepository>();
