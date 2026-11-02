@@ -1,14 +1,13 @@
-using Itmo.Dev.Platform.Persistence.Abstractions.Transactions;
 using NSubstitute;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Abstractions.Persistence.Repositories;
+using Service.Application.Abstractions.Persistence.Transactions;
 using Service.Application.Contracts.Account.Operations;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Sessions;
 using Service.Application.Services;
 using Xunit;
-using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Lab1.Tests;
 
@@ -56,7 +55,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-            Arg.Any<IsolationLevel>(),
+            Arg.Any<System.Transactions.IsolationLevel>(),
             Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -111,7 +110,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<IsolationLevel>(),
+                Arg.Any<System.Transactions.IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -170,7 +169,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<IsolationLevel>(),
+                Arg.Any<System.Transactions.IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -223,7 +222,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<IsolationLevel>(),
+                Arg.Any<System.Transactions.IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 
