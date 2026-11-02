@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
+        <ProjectReference Include="..\..\..\console-client\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.AccountService\ConsoleClient.Infrastructure.AccountService.csproj" />
         <ProjectReference Include="..\Service.Application.Abstractions\Service.Application.Abstractions.csproj"/>
         <ProjectReference Include="..\Service.Application.Contracts\Service.Application.Contracts.csproj"/>
         <ProjectReference Include="..\Service.Application.Model\Service.Application.Model.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Itmo.Dev.Platform.Persistence.Abstractions"/>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+      <PackageReference Include="Microsoft.Extensions.Options" />
+      <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
     </ItemGroup>
 </Project>
