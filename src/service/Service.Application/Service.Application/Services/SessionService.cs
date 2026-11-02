@@ -1,4 +1,3 @@
-using Itmo.Dev.Platform.Persistence.Abstractions.Transactions;
 using Microsoft.Extensions.Options;
 using Service.Application.Abstractions.Persistence;
 using Service.Application.Abstractions.Persistence.Queries;
@@ -8,23 +7,19 @@ using Service.Application.Mapping;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Sessions;
 using Service.Application.Services.Options;
-using System.Data;
 
 namespace Service.Application.Services;
 
 internal class SessionService : ISessionService
 {
     private readonly IPersistenceContext _context;
-    private readonly IPersistenceTransactionProvider _transactionProvider;
     private readonly SessionServiceOptions _options;
 
     public SessionService(
         IPersistenceContext context,
-        IPersistenceTransactionProvider transactionProvider,
         IOptions<SessionServiceOptions> options)
     {
         _context = context;
-        _transactionProvider = transactionProvider;
         _options = options.Value;
     }
 
@@ -32,23 +27,16 @@ internal class SessionService : ISessionService
         CreateAdminSession.Request request,
         CancellationToken cancellationToken)
     {
-        // посмотреть что такое Options -> ??
         if (request.Password != _options.Password)
         {
             return new CreateAdminSession.Response.Failure("Incorrect Password");
         }
-
-        await using IPersistenceTransaction transaction = await _transactionProvider.BeginTransactionAsync(
-                IsolationLevel.ReadCommitted,
-                cancellationToken);
 
         var adminSession = AdminSession.CreateNew();
 
         await _context.Sessions.AddOrUpdateAsync(
             adminSession,
             cancellationToken);
-
-        await transaction.CommitAsync(cancellationToken);
 
         return new CreateAdminSession.Response.Success(adminSession.MapToDto());
     }
@@ -57,10 +45,6 @@ internal class SessionService : ISessionService
         CreateUserSession.Request request,
         CancellationToken cancellationToken)
     {
-        await using IPersistenceTransaction transaction = await _transactionProvider.BeginTransactionAsync(
-            IsolationLevel.ReadCommitted,
-            cancellationToken);
-
         AccountQuery builder = AccountQuery.Build(builder => builder
             .WithCardNumber(request.CardNumber));
 
@@ -83,8 +67,6 @@ internal class SessionService : ISessionService
         await _context.Sessions.AddOrUpdateAsync(
             session,
             cancellationToken);
-
-        await transaction.CommitAsync(cancellationToken);
 
         return new CreateUserSession.Response.Success(session.MapToDto());
     }
