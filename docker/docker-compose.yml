@@ -2,7 +2,7 @@ name: atm-service
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:18-alpine
     ports:
       - "5432:5432"
     environment:
