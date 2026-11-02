@@ -1,21 +1,24 @@
 ﻿using FluentMigrator;
-using Itmo.Dev.Platform.Persistence.Postgres.Migrations;
 
 namespace Service.Infrastructure.Persistence.Migrations;
 
 [Migration(1784644270, "Initial")]
-public class Initial : SqlMigration
+public class Initial : Migration
 {
-    protected override string GetUpSql(IServiceProvider serviceProvider) =>
-        """
-        CREATE TABLE sessions (
-          session_id uuid not null PRIMARY KEY,
-          session_data jsonb not null
-        );
-        """;
+    public override void Up()
+    {
+        Execute.Sql(@"
+            CREATE TABLE sessions (
+              session_id uuid not null PRIMARY KEY,
+              session_data jsonb not null
+            );
+        ");
+    }
 
-    protected override string GetDownSql(IServiceProvider serviceProvider) =>
-        """
-        DROP TABLE sessions;
-        """;
+    public override void Down()
+    {
+        Execute.Sql(@"
+            DROP TABLE sessions;
+        ");
+    }
 }

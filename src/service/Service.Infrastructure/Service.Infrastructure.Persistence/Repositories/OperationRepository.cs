@@ -1,5 +1,4 @@
-using Itmo.Dev.Platform.Persistence.Abstractions.Commands;
-using Itmo.Dev.Platform.Persistence.Abstractions.Connections;
+using Npgsql;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Abstractions.Persistence.Repositories;
 using Service.Application.Model.Operations;
@@ -15,13 +14,13 @@ namespace Service.Infrastructure.Persistence.Repositories;
 
 internal sealed class OperationRepository : IOperationRepository
 {
-    private readonly IPersistenceConnectionProvider _connectionProvider;
+    private readonly NpgsqlDataSource _dataSource;
     private readonly IOperationLink _link;
 
-    public OperationRepository(IPersistenceConnectionProvider connectionProvider, IOperationLink link)
+    public OperationRepository(IOperationLink link, NpgsqlDataSource dataSource)
     {
-        _connectionProvider = connectionProvider;
         _link = link;
+        _dataSource = dataSource;
     }
 
     public async Task AddOrUpdateAsync(
@@ -35,13 +34,15 @@ internal sealed class OperationRepository : IOperationRepository
         FROM unnest (:occured_ats, :account_ids, :datas) AS SOURCE(occured_at, account_id, data)
         """;
 
-        await using IPersistenceConnection connection = await _connectionProvider
-            .GetConnectionAsync(cancellationToken);
+        await using NpgsqlConnection connection = await _dataSource
+            .OpenConnectionAsync(cancellationToken);
 
-        await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("occured_ats", operations.Select(operation => operation.OccuredAt.Value))
-            .AddParameter("account_ids", operations.Select(operation => operation.AccountId.Value))
-            .AddParameter("datas", operations.Select(MapOperationToJson));
+        await using var command = new NpgsqlCommand(sql, connection);
+        command.Parameters.Add(new NpgsqlParameter("occured_ats", operations
+            .Select(operation => operation.OccuredAt.Value)));
+        command.Parameters.Add(new NpgsqlParameter("account_ids", operations
+            .Select(operation => operation.AccountId.Value)));
+        command.Parameters.Add(new NpgsqlParameter("datas", operations.Select(MapOperationToJson)));
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
@@ -58,11 +59,11 @@ internal sealed class OperationRepository : IOperationRepository
         ORDER BY occured_at DESC
         """;
 
-        await using IPersistenceConnection connection = await _connectionProvider
-            .GetConnectionAsync(cancellationToken);
+        await using NpgsqlConnection connection = await _dataSource
+            .OpenConnectionAsync(cancellationToken);
 
-        await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("account_id", query.AccountId.Value);
+        await using var command = new NpgsqlCommand(sql, connection);
+        command.Parameters.Add(new NpgsqlParameter("account_id", query.AccountId.Value));
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 

@@ -1,5 +1,4 @@
-using Itmo.Dev.Platform.Persistence.Abstractions.Commands;
-using Itmo.Dev.Platform.Persistence.Abstractions.Connections;
+using Npgsql;
 using Service.Application.Abstractions.Persistence.Queries;
 using Service.Application.Abstractions.Persistence.Repositories;
 using Service.Application.Model.Accounts;
@@ -11,11 +10,11 @@ namespace Service.Infrastructure.Persistence.Repositories;
 
 internal sealed class AccountRepository : IAccountRepository
 {
-    private readonly IPersistenceConnectionProvider _connectionProvider;
+    private readonly NpgsqlDataSource _dataSource;
 
-    public AccountRepository(IPersistenceConnectionProvider connectionProvider)
+    public AccountRepository(NpgsqlDataSource dataSource)
     {
-        _connectionProvider = connectionProvider;
+        _dataSource = dataSource;
     }
 
     public async IAsyncEnumerable<Account> AddOrUpdateAsync(
@@ -33,12 +32,12 @@ internal sealed class AccountRepository : IAccountRepository
         RETURNING account_id, card_number, pin_code, balance;
         """;
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 
-        await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("card_numbers", accounts.Select(x => x.CardNumber))
-            .AddParameter("pin_codes", accounts.Select(x => x.PinCode))
-            .AddParameter("balances", accounts.Select(x => x.Balance.Value));
+        await using var command = new NpgsqlCommand(sql, connection);
+        command.Parameters.Add(new NpgsqlParameter("card_numbers", accounts.Select(x => x.CardNumber)));
+        command.Parameters.Add(new NpgsqlParameter("pin_codes", accounts.Select(x => x.PinCode)));
+        command.Parameters.Add(new NpgsqlParameter("balances", accounts.Select(x => x.Balance.Value)));
 
         DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
@@ -66,11 +65,11 @@ internal sealed class AccountRepository : IAccountRepository
         WHERE (length(:number) = 0  or card_number = :number) AND (:id = 0 or :id = account_id);
         """; // Не особо уверен, что тут правильно сравнивать id с 0, тк при создании пользовательской сессии туда всегда идет 0
 
-        await using IPersistenceConnection connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+        await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 
-        await using IPersistenceCommand command = connection.CreateCommand(sql)
-            .AddParameter("number", query.CardNumber)
-            .AddParameter("id", query.Id.Value);
+        await using var command = new NpgsqlCommand(sql, connection);
+        command.Parameters.Add(new NpgsqlParameter("number", query.CardNumber));
+        command.Parameters.Add(new NpgsqlParameter("id", query.Id.Value));
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
