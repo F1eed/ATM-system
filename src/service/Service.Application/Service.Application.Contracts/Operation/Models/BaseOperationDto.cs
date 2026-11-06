@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Service.Application.Contracts.Operation.Models;
 
-[JsonDerivedType(typeof(DepositOperationDto))]
-[JsonDerivedType(typeof(WithdrawOperationDto))]
-[JsonDerivedType(typeof(CheckBalanceOperationDto))]
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(DepositOperationDto), "deposit")]
+[JsonDerivedType(typeof(WithdrawOperationDto), "withdraw")]
+[JsonDerivedType(typeof(CheckBalanceOperationDto), "check balance")]
 public abstract record BaseOperationDto(
     long OperationId,
     long AccountId,
-    DateTimeOffset OccuredAt,
-    string Type);
+    DateTimeOffset OccuredAt);

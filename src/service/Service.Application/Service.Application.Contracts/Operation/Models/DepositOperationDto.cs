@@ -5,4 +5,4 @@ public record DepositOperationDto(
     long AccountId,
     DateTimeOffset OccuredAt,
     decimal Amount,
-    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt, "Deposit");
+    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt);

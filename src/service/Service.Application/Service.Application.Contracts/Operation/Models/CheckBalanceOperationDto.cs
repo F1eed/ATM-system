@@ -4,4 +4,4 @@ public record CheckBalanceOperationDto(
     long OperationId,
     long AccountId,
     DateTimeOffset OccuredAt,
-    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt, "Check balance");
+    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt);

@@ -5,4 +5,4 @@ public record WithdrawOperationDto(
     long AccountId,
     DateTimeOffset OccuredAt,
     decimal Amount,
-    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt, "Withdraw");
+    decimal RemainingBalance) : BaseOperationDto(OperationId, AccountId, OccuredAt);
