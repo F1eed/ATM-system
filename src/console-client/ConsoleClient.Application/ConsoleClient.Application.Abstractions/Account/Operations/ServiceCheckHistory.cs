@@ -1,4 +1,4 @@
-using ConsoleClient.Application.Model;
+using ConsoleClient.Application.Model.Operations;
 
 namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
@@ -10,7 +10,7 @@ public static class ServiceCheckHistory
     {
         private Result() { }
 
-        public sealed record Success(IReadOnlyCollection<Operation> OperationEntries) : Result;
+        public sealed record Success(IReadOnlyCollection<IOperation> OperationEntries) : Result;
 
         public sealed record Failure(string ErrorMessage) : Result;
     }
