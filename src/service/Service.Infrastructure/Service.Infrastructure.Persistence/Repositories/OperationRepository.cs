@@ -7,6 +7,7 @@ using Service.Infrastructure.Persistence.Mapping.Operation.Results;
 using Service.Infrastructure.Persistence.Models.Operation;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -83,15 +84,33 @@ internal sealed class OperationRepository : IOperationRepository
         long operationId = reader.GetInt64("operation_id");
         long accountId = reader.GetInt64("account_id");
 
-        return _link.MapToDomain(occuredAt, operationId, accountId, model) is MappingToDomainResult.Success success
-            ? success.Operation
-            : throw new InvalidOperationException("mapper is not found");
+        if (_link.MapToDomain(occuredAt, operationId, accountId, model)
+            is MappingToDomainResult.Success success)
+        {
+            return success.Operation;
+        }
+
+        if (_link.MapToDomain(occuredAt, operationId, accountId, model) is MappingToDomainResult.Failure failure)
+        {
+            throw new InvalidOperationException(failure.ErrorMessage);
+        }
+
+        throw new UnreachableException();
     }
 
     private string MapOperationToJson(IOperation operation)
     {
-        return _link.MapToModel(operation) is MappingToModelResult.Success success
-            ? JsonSerializer.Serialize(success.Model)
-            : throw new InvalidOperationException("mapper is not found");
+        if (_link.MapToModel(operation)
+            is MappingToModelResult.Success success)
+        {
+            return JsonSerializer.Serialize(success.Model);
+        }
+
+        if (_link.MapToModel(operation) is MappingToModelResult.Failure failure)
+        {
+            throw new InvalidOperationException(failure.ErrorMessage);
+        }
+
+        throw new UnreachableException();
     }
 }
