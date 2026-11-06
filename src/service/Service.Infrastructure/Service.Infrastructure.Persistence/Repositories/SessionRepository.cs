@@ -39,7 +39,7 @@ internal sealed class SessionRepository : ISessionRepository
 
         await using var command = new NpgsqlCommand(sql, connection);
         command.Parameters.Add(new NpgsqlParameter("data", JsonSerializer.Serialize(dbModel)));
-        command.Parameters.Add(new NpgsqlParameter("id", session.SessionId));
+        command.Parameters.Add(new NpgsqlParameter("id", session.SessionId.Value));
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
