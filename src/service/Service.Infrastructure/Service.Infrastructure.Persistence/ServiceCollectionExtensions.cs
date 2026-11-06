@@ -45,7 +45,6 @@ public static class ServiceCollectionExtensions
 
         collection.AddScoped<IPersistenceContext, PersistenceContext>();
         collection.AddScoped<IPersistenceTransactionProvider, PostgresPersistenceTransactionProvider>();
-        collection.AddScoped<IPersistenceTransaction, PostgresPersistenceTransaction>();
 
         collection.AddScoped<IAccountRepository, AccountRepository>();
         collection.AddScoped<IOperationRepository, OperationRepository>();

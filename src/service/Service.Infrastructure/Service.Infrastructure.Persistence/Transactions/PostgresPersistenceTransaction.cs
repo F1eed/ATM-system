@@ -22,6 +22,7 @@ internal class PostgresPersistenceTransaction : IPersistenceTransaction
         if (_disposed is false)
         {
             _scope.Dispose();
+            _disposed = true;
         }
 
         return ValueTask.CompletedTask;
@@ -39,8 +40,8 @@ internal class PostgresPersistenceTransaction : IPersistenceTransaction
 
     public ValueTask RollbackAsync(CancellationToken cancellationToken)
     {
-        _disposed = true;
         _scope.Dispose();
+        _disposed = true;
 
         return ValueTask.CompletedTask;
     }
