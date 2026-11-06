@@ -22,9 +22,9 @@ public static class SessionMappingExtensions
     {
         return session switch
         {
-            AdminSession adminSession => new AdminSessionModel(adminSession.SessionId),
+            AdminSession adminSession => new AdminSessionModel(adminSession.SessionId.Value),
             UserSession userSession => new UserSessionModel(
-                userSession.SessionId,
+                userSession.SessionId.Value,
                 userSession.AccountId.Value),
             _ => throw new UnreachableException(),
         };

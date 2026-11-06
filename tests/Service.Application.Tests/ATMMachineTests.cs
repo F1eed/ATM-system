@@ -65,7 +65,7 @@ public class ATMMachineTests
 
         // Act
         Withdraw.Response response = await accountService.WithdrawAsync(
-            new Withdraw.Request(session.SessionId, 300m),
+            new Withdraw.Request(session.SessionId.Value, 300m),
             CancellationToken.None);
 
         // Assert
@@ -121,7 +121,7 @@ public class ATMMachineTests
         // Act
         Withdraw.Response response = await accountService
             .WithdrawAsync(
-                new Withdraw.Request(session.SessionId, 3000m),
+                new Withdraw.Request(session.SessionId.Value, 3000m),
                 CancellationToken.None);
 
         // Assert
@@ -179,7 +179,7 @@ public class ATMMachineTests
 
         // Act
         Deposit.Response response = await accountService.DepositAsync(
-            new Deposit.Request(session.SessionId, 1000m),
+            new Deposit.Request(session.SessionId.Value, 1000m),
             CancellationToken.None);
 
         // Assert
@@ -232,7 +232,7 @@ public class ATMMachineTests
 
         // Act
         Deposit.Response response = await accountService.DepositAsync(
-            new Deposit.Request(session.SessionId, -300m),
+            new Deposit.Request(session.SessionId.Value, -300m),
             CancellationToken.None);
 
         // Assert

@@ -6,11 +6,11 @@ public class UserSession : ISession
 {
     private UserSession(AccountId accountId, Guid sessionId)
     {
-        SessionId = sessionId;
+        SessionId = new SessionId(sessionId);
         AccountId = accountId;
     }
 
-    public Guid SessionId { get; }
+    public SessionId SessionId { get; }
 
     public AccountId AccountId { get; }
 

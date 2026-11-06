@@ -4,10 +4,10 @@ public class AdminSession : ISession
 {
     private AdminSession(Guid sessionId)
     {
-        SessionId = sessionId;
+        SessionId = new SessionId(sessionId);
     }
 
-    public Guid SessionId { get; }
+    public SessionId SessionId { get; }
 
     public static AdminSession CreateNew() => new(Guid.NewGuid());
 
