@@ -81,11 +81,10 @@ public class AccountClient : IAccountClient
         CancellationToken cancellationToken)
     {
         var httpRequest = new WithdrawRequest(
-            request.SessionId,
             request.Amount);
 
         IApiResponse<WithdrawResponse> response = await _refitAccountClient.WithdrawMoneyAsync(
-            httpRequest.SessionId,
+            request.SessionId,
             httpRequest,
             cancellationToken);
 
