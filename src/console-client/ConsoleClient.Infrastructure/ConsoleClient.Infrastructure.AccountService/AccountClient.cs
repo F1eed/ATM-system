@@ -50,20 +50,16 @@ public class AccountClient : IAccountClient
         ServiceDeposit.Request request,
         CancellationToken cancellationToken)
     {
-        // Чет хуйни тут наворотил(не нрав, что тащу в депозите sessionId, хотя это в route ручки у меня она уже есть)
-        var httpRequest = new DepositRequest(
-            request.SessionId,
-            request.Amount);
+        var httpRequest = new DepositRequest(request.Amount);
 
-        // Есть вопросик
         IApiResponse<DepositResponse> response = await _refitAccountClient.DepositMoneyAsync(
-            httpRequest.SessionId,
+            request.SessionId,
             httpRequest,
             cancellationToken);
 
         if (response.IsSuccessfulWithContent)
         {
-            // А норм ли тут создавать доменную модельку клиента?
+            // А норм ли тут создавать доменную модельку клиента? (Думаю норм учитывая что это инфра)
             return new ServiceDeposit.Result.Success(new Account(
                 response.Content.Entry.CardNumber,
                 response.Content.Entry.Balance));
@@ -95,7 +91,6 @@ public class AccountClient : IAccountClient
 
         if (response.IsSuccessfulWithContent)
         {
-            // А норм ли тут создавать доменную модельку клиента?
             return new ServiceWithdraw.Result.Success(new Account(
                 response.Content.Entry.CardNumber,
                 response.Content.Entry.Balance));
@@ -107,7 +102,6 @@ public class AccountClient : IAccountClient
                 apiException.Content ?? string.Empty);
         }
 
-        // Норм что "?"
         return new ServiceWithdraw.Result.Failure(
             response.Error?.Message ?? string.Empty);
     }
@@ -131,7 +125,6 @@ public class AccountClient : IAccountClient
                 apiException.Content ?? string.Empty);
         }
 
-        // Норм что "?"
         return new ServiceCheckBalance.Result.Failure(
             response.Error?.Message ?? string.Empty);
     }
@@ -163,7 +156,6 @@ public class AccountClient : IAccountClient
                 apiException.Content ?? string.Empty);
         }
 
-        // Норм что "?"
         return new ServiceCheckHistory.Result.Failure(
             response.Error?.Message ?? string.Empty);
     }

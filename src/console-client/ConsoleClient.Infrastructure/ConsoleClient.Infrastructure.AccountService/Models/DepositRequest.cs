@@ -1,3 +1,3 @@
 namespace ConsoleClient.Infrastructure.AccountService.Models;
 
-public record DepositRequest(Guid SessionId, decimal Amount);
+public record DepositRequest(decimal Amount);
