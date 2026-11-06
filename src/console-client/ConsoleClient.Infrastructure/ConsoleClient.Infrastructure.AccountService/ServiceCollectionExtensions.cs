@@ -13,7 +13,8 @@ public static class ServiceCollectionExtensions
         collection
             .AddOptions<AccountClientOptions>()
             .BindConfiguration("Infrastructure:Configuration")
-            .ValidateOnStart();
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
 
         collection
             .AddRefitClient<IRefitAccountClient>()

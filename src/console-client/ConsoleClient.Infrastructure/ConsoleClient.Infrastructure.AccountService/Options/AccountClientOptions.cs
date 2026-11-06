@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ConsoleClient.Infrastructure.AccountService.Options;
 
 public sealed class AccountClientOptions
 {
-    public required Uri Address { get; init; }
+    [MinLength(1)]
+    public required Uri Address { get; set; }
 }
