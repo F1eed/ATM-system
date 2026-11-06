@@ -19,7 +19,7 @@ public class CheckHistoryCommand : AsyncCommand
         _clientContext = clientContext;
     }
 
-    protected override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken)
     {
         if (_clientContext.UserSessionId is null)
         {
