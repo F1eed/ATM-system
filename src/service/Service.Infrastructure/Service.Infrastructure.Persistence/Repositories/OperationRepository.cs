@@ -29,20 +29,26 @@ internal sealed class OperationRepository : IOperationRepository
         CancellationToken cancellationToken)
     {
         const string sql =
-        """
-        INSERT INTO operations (occured_at, account_id, operation_data)
-        SELECT source.occured_at, source.account_id, source.data::jsonb
-        FROM unnest (:occured_ats, :account_ids, :datas) AS SOURCE(occured_at, account_id, data)
-        """;
+            """
+            INSERT INTO operations (occured_at, account_id, operation_data)
+            SELECT source.occured_at, source.account_id, source.data::jsonb
+            FROM unnest (:occured_ats, :account_ids, :datas) AS SOURCE(occured_at, account_id, data)
+            """;
 
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync(cancellationToken);
 
         await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.Add(new NpgsqlParameter("occured_ats", operations
-            .Select(operation => operation.OccuredAt.Value).ToList()));
-        command.Parameters.Add(new NpgsqlParameter("account_ids", operations
-            .Select(operation => operation.AccountId.Value).ToList()));
+        command.Parameters.Add(new NpgsqlParameter(
+            "occured_ats",
+            operations
+                .Select(operation => operation.OccuredAt.Value)
+                .ToList()));
+        command.Parameters.Add(new NpgsqlParameter(
+            "account_ids",
+            operations
+                .Select(operation => operation.AccountId.Value)
+                .ToList()));
         command.Parameters.Add(new NpgsqlParameter("datas", operations.Select(MapOperationToJson).ToList()));
 
         await command.ExecuteNonQueryAsync(cancellationToken);
@@ -53,18 +59,23 @@ internal sealed class OperationRepository : IOperationRepository
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
-        """
-        SELECT operation_id, occured_at, account_id, operation_data
-        FROM operations
-        WHERE :account_id = account_id
-        ORDER BY occured_at DESC
-        """;
+            """
+            SELECT operation_id, occured_at, account_id, operation_data
+            FROM operations
+            WHERE (:account_id = account_id) AND (:key_cursor IS NULL OR :key_cursor > operation_id)
+            ORDER BY operation_id DESC
+            LIMIT :page_size
+            """;
 
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync(cancellationToken);
 
         await using var command = new NpgsqlCommand(sql, connection);
         command.Parameters.Add(new NpgsqlParameter("account_id", query.AccountId.Value));
+        command.Parameters.Add(new NpgsqlParameter<long?>(
+            "key_cursor",
+            query.KeyCursor));
+        command.Parameters.Add(new NpgsqlParameter("page_size", query.PageSize));
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 

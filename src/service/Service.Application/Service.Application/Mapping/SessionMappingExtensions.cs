@@ -6,5 +6,7 @@ namespace Service.Application.Mapping;
 public static class SessionMappingExtensions
 {
     public static SessionDto MapToDto(this ISession session)
-        => new(session.SessionId.Value);
+    {
+        return new SessionDto(session.SessionId.Value);
+    }
 }

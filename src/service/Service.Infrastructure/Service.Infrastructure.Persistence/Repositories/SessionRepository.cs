@@ -49,12 +49,12 @@ internal sealed class SessionRepository : ISessionRepository
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
-        """
-        SELECT session_id, session_data
-        FROM sessions
-        WHERE :session_ids IS NULL
-           OR session_id = ANY(:session_ids);
-        """;
+            """
+            SELECT session_id, session_data
+            FROM sessions
+            WHERE :session_ids IS NULL
+               OR session_id = ANY(:session_ids);
+            """;
 
         await using NpgsqlConnection connection = await _dataSource
             .OpenConnectionAsync(cancellationToken);
@@ -70,7 +70,7 @@ internal sealed class SessionRepository : ISessionRepository
                 JsonSerializer.Deserialize<SessionModel>(
                     await reader.GetFieldValueAsync<string>(
                         "session_data",
-                        cancellationToken: cancellationToken))
+                        cancellationToken))
                 ?? throw new InvalidOperationException("Undefined type of session data");
 
             yield return dbModel.ToDomain();

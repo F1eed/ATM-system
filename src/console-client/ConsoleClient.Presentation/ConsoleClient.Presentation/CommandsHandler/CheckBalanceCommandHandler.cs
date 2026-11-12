@@ -4,14 +4,14 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
 
-namespace ConsoleClient.Presentation.Commands;
+namespace ConsoleClient.Presentation.CommandsHandler;
 
-public class CheckBalanceCommand : AsyncCommand
+public class CheckBalanceCommandHandler : AsyncCommand
 {
     private readonly IBankService _bankService;
     private readonly ClientContext _clientContext;
 
-    public CheckBalanceCommand(IBankService bankService, ClientContext clientContext)
+    public CheckBalanceCommandHandler(IBankService bankService, ClientContext clientContext)
     {
         _bankService = bankService;
         _clientContext = clientContext;
@@ -41,7 +41,7 @@ public class CheckBalanceCommand : AsyncCommand
 
         if (result is CheckBalance.Result.Failure failure)
         {
-            AnsiConsole.MarkupLine($"[red]ERROR: {failure.ErrorMessage}[/]");
+            AnsiConsole.MarkupLine($"[red]ERROR: {Markup.Escape(failure.ErrorMessage)}[/]");
             return 1;
         }
 

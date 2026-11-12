@@ -1,18 +1,26 @@
 using ConsoleClient.Application.Abstractions.Account;
 using ConsoleClient.Application.Abstractions.Account.Operations;
 using ConsoleClient.Application.Model;
+using ConsoleClient.Application.Model.Operations;
+using ConsoleClient.Infrastructure.AccountService.Mapping;
 using ConsoleClient.Infrastructure.AccountService.Models;
+using ConsoleClient.Infrastructure.AccountService.Options;
+using Microsoft.Extensions.Options;
 using Refit;
 
 namespace ConsoleClient.Infrastructure.AccountService;
 
 public class AccountClient : IAccountClient
 {
+    private readonly IOptionsMonitor<AccountClientOptions> _options;
     private readonly IRefitAccountClient _refitAccountClient;
 
-    public AccountClient(IRefitAccountClient refitAccountClient)
+    public AccountClient(
+        IRefitAccountClient refitAccountClient,
+        IOptionsMonitor<AccountClientOptions> options)
     {
         _refitAccountClient = refitAccountClient;
+        _options = options;
     }
 
     public async Task<ServiceCreateAccount.Result> CreateAccountAsync(
@@ -132,30 +140,41 @@ public class AccountClient : IAccountClient
         ServiceCheckHistory.Request request,
         CancellationToken cancellationToken)
     {
-        IApiResponse<CheckHistoryResponse> response = await _refitAccountClient.CheckHistoryAsync(
-            request.SessionId,
-            cancellationToken);
+        var operations = new List<IOperation>(request.OperationsCount);
 
-        if (response.IsSuccessfulWithContent)
+        int pageSize = _options.CurrentValue.PageSize;
+        string? pageToken = null;
+
+        do
         {
-            return new ServiceCheckHistory.Result.Success(
-                response.Content.Operations.Select(entry => new Operation(
-                    entry.OperationId,
-                    entry.AccountId,
-                    entry.OccuredAt,
-                    entry.Type,
-                    entry.Amount,
-                    entry.RemainingBalance))
-                .ToList());
-        }
+            int remaining = request.OperationsCount - operations.Count;
+            int requestPageSize = Math.Min(remaining, pageSize);
 
-        if (response.HasResponseError(out ApiException? apiException))
-        {
-            return new ServiceCheckHistory.Result.Failure(
-                apiException.Content ?? string.Empty);
-        }
+            var clientRequest = new CheckHistoryRequest(pageToken, requestPageSize);
 
-        return new ServiceCheckHistory.Result.Failure(
-            response.Error?.Message ?? string.Empty);
+            IApiResponse<CheckHistoryResponse> response = await _refitAccountClient.CheckHistoryAsync(
+                request.SessionId,
+                clientRequest,
+                cancellationToken);
+
+            if (response.HasResponseError(out ApiException? apiException))
+            {
+                return new ServiceCheckHistory.Result.Failure(
+                    apiException.Content ?? string.Empty);
+            }
+
+            if (response.IsSuccessfulWithContent is false)
+            {
+                return new ServiceCheckHistory.Result.Failure(
+                    response.Error?.Message ?? string.Empty);
+            }
+
+            operations.AddRange(response.Content.Operations.Select(x => x.MapToModel()));
+
+            pageToken = response.Content.PageToken;
+        }
+        while (pageToken is not null && operations.Count < request.OperationsCount);
+
+        return new ServiceCheckHistory.Result.Success(operations);
     }
 }

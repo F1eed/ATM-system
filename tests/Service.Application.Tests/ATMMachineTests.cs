@@ -7,11 +7,12 @@ using Service.Application.Contracts.Account.Operations;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Sessions;
 using Service.Application.Services;
+using System.Transactions;
 using Xunit;
 
 namespace Lab1.Tests;
 
-public class ATMMachineTests
+public class AtmMachineTests
 {
     [Fact]
     public async Task ATMMachineTest_Should_Withdraw_When_EnoughMoneyInTheAccount()
@@ -28,13 +29,13 @@ public class ATMMachineTests
         var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
-            Arg.Any<SessionQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<ISession>([session]).ToAsyncEnumerable());
 
         accountRepository.QueryAsync(
-            Arg.Any<AccountQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<Account>([account]).ToAsyncEnumerable());
 
         account.TryDeposit(1000m);
@@ -55,8 +56,8 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-            Arg.Any<System.Transactions.IsolationLevel>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<IsolationLevel>(),
+                Arg.Any<CancellationToken>())
             .Returns(transaction);
 
         var accountService = new AccountService(
@@ -88,13 +89,13 @@ public class ATMMachineTests
         var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
-            Arg.Any<SessionQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<ISession>([session]).ToAsyncEnumerable());
 
         accountRepository.QueryAsync(
-            Arg.Any<AccountQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<Account>([account]).ToAsyncEnumerable());
 
         account.TryDeposit(1000m);
@@ -110,7 +111,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<System.Transactions.IsolationLevel>(),
+                Arg.Any<IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -144,13 +145,13 @@ public class ATMMachineTests
         var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
-            Arg.Any<SessionQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<ISession>([session]).ToAsyncEnumerable());
 
         accountRepository.QueryAsync(
-            Arg.Any<AccountQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<Account>([account]).ToAsyncEnumerable());
 
         IPersistenceContext context = Substitute.For<IPersistenceContext>();
@@ -169,7 +170,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<System.Transactions.IsolationLevel>(),
+                Arg.Any<IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -202,13 +203,13 @@ public class ATMMachineTests
         var session = UserSession.CreateNew(account.AccountId);
 
         sessionRepository.QueryAsync(
-            Arg.Any<SessionQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<ISession>([session]).ToAsyncEnumerable());
 
         accountRepository.QueryAsync(
-            Arg.Any<AccountQuery>(),
-            Arg.Any<CancellationToken>())
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
             .Returns(new List<Account>([account]).ToAsyncEnumerable());
 
         IPersistenceContext context = Substitute.For<IPersistenceContext>();
@@ -222,7 +223,7 @@ public class ATMMachineTests
 
         transactionProvider
             .BeginTransactionAsync(
-                Arg.Any<System.Transactions.IsolationLevel>(),
+                Arg.Any<IsolationLevel>(),
                 Arg.Any<CancellationToken>())
             .Returns(transaction);
 

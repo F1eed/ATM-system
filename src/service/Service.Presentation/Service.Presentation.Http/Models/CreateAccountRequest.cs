@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Presentation.Http.Models;
 
@@ -11,8 +12,10 @@ public sealed class CreateAccountRequest
 
     public class CreateAccountEntry
     {
+        [Length(minimumLength: 4, maximumLength: 4)]
         public required string PinCode { get; init; }
 
+        [Length(minimumLength: 16, maximumLength: 16)]
         public required string CardNumber { get; init; }
     }
 }

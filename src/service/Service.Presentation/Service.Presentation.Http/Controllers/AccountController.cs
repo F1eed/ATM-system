@@ -3,6 +3,7 @@ using Service.Application.Contracts.Account;
 using Service.Application.Contracts.Account.Operations;
 using Service.Presentation.Http.Models;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace Service.Presentation.Http.Controllers;
 
@@ -119,21 +120,46 @@ public sealed class AccountController : ControllerBase
     [HttpGet("{sessionId}/operations")]
     public async Task<ActionResult<CheckHistoryResponse>> CheckAccountHistoryAsync(
         Guid sessionId,
+        [FromQuery] CheckHistoryRequest request,
         CancellationToken cancellationToken)
     {
-        var request = new CheckHistory.Request(sessionId);
+        CheckHistory.PageToken? pageToken = request.PageToken is null
+            ? null
+            : new CheckHistory.PageToken(
+                JsonSerializer.Deserialize<long>(request.PageToken));
 
-        CheckHistory.Response response = await _accountService.CheckHistoryAsync(
-            request,
+        var applicationRequest = new CheckHistory.Request(
+            sessionId,
+            pageToken,
+            request.PageSize);
+
+        CheckHistory.Response applicationResponse = await _accountService.CheckHistoryAsync(
+            applicationRequest,
             cancellationToken);
 
-        return response switch
+        if (applicationResponse is CheckHistory.Response.Failure failure)
         {
-            CheckHistory.Response.Success success => Ok(
-                new CheckHistoryResponse(success.Operations)),
-            CheckHistory.Response.NotUserSession => Unauthorized(),
-            CheckHistory.Response.Failure failure => BadRequest(failure.Message),
-            _ => throw new UnreachableException(),
-        };
+            return BadRequest(failure.Message);
+        }
+
+        if (applicationResponse is CheckHistory.Response.NotUserSession)
+        {
+            return Unauthorized();
+        }
+
+        if (applicationResponse is CheckHistory.Response.Success success)
+        {
+            string? responsePageToken = success.PageToken is null
+                ? null
+                : JsonSerializer.Serialize(success.PageToken.Value.Key);
+
+            return Ok(new CheckHistoryResponse
+            {
+                Operations = success.Operations,
+                PageToken = responsePageToken,
+            });
+        }
+
+        throw new UnreachableException();
     }
 }

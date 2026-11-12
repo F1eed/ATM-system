@@ -9,6 +9,7 @@ using Service.Application.Mapping;
 using Service.Application.Model.Accounts;
 using Service.Application.Model.Operations;
 using Service.Application.Model.Sessions;
+using System.Transactions;
 
 namespace Service.Application.Services;
 
@@ -31,7 +32,7 @@ internal class AccountService : IAccountService
 
         ISession? session = await _context.Sessions
             .QueryAsync(builder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (session is not AdminSession)
         {
@@ -43,7 +44,7 @@ internal class AccountService : IAccountService
         List<AccountDto> dtos = await _context.Accounts
             .AddOrUpdateAsync(list, cancellationToken)
             .Select(x => x.MapToDto())
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return new CreateAccount.Response.Success(dtos);
     }
@@ -56,7 +57,7 @@ internal class AccountService : IAccountService
 
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (session is not UserSession userSession)
         {
@@ -66,7 +67,7 @@ internal class AccountService : IAccountService
         var accountBuilder = AccountQuery.Build(builder => builder.WithId(userSession.AccountId));
         Account? account = await _context.Accounts
             .QueryAsync(accountBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (account is null)
         {
@@ -92,12 +93,12 @@ internal class AccountService : IAccountService
 
         await using IPersistenceTransaction transaction = await _transactionProvider
             .BeginTransactionAsync(
-                System.Transactions.IsolationLevel.ReadCommitted,
+                IsolationLevel.ReadCommitted,
                 cancellationToken);
 
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (session is not UserSession userSession)
         {
@@ -107,7 +108,7 @@ internal class AccountService : IAccountService
         var accountBuilder = AccountQuery.Build(builder => builder.WithId(userSession.AccountId));
         Account? account = await _context.Accounts
             .QueryAsync(accountBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (account is null)
         {
@@ -131,7 +132,7 @@ internal class AccountService : IAccountService
         AccountDto dto = await _context.Accounts
             .AddOrUpdateAsync([account], cancellationToken)
             .Select(x => x.MapToDto())
-            .FirstAsync(cancellationToken: cancellationToken);
+            .FirstAsync(cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 
@@ -146,12 +147,12 @@ internal class AccountService : IAccountService
 
         await using IPersistenceTransaction transaction = await _transactionProvider
             .BeginTransactionAsync(
-                System.Transactions.IsolationLevel.ReadCommitted,
+                IsolationLevel.ReadCommitted,
                 cancellationToken);
 
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (session is not UserSession userSession)
         {
@@ -162,7 +163,7 @@ internal class AccountService : IAccountService
 
         Account? account = await _context.Accounts
             .QueryAsync(accountBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (account is null)
         {
@@ -187,7 +188,7 @@ internal class AccountService : IAccountService
         AccountDto dto = await _context.Accounts
             .AddOrUpdateAsync([account], cancellationToken)
             .Select(x => x.MapToDto())
-            .FirstAsync(cancellationToken: cancellationToken);
+            .FirstAsync(cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 
@@ -202,17 +203,20 @@ internal class AccountService : IAccountService
 
         ISession? session = await _context.Sessions
             .QueryAsync(sessionBuilder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (session is not UserSession userSession)
         {
             return new CheckHistory.Response.NotUserSession();
         }
 
-        var operationBuilder = OperationQuery.Build(builder => builder.WithAccountId(userSession.AccountId));
+        var operationQuery = OperationQuery.Build(builder => builder
+            .WithAccountId(userSession.AccountId)
+            .WithKeyCursor(request.PageToken?.Key)
+            .WithPageSize(request.PageSize));
 
         IAsyncEnumerable<IOperation> operations = _context.Operations
-            .QueryAsync(operationBuilder, cancellationToken);
+            .QueryAsync(operationQuery, cancellationToken);
 
         List<BaseOperationDto> operationList = [];
 
@@ -221,6 +225,10 @@ internal class AccountService : IAccountService
             operationList.Add(operation.MapToDto());
         }
 
-        return new CheckHistory.Response.Success(operationList);
+        CheckHistory.PageToken? responsePageToken = operationList.Count < request.PageSize
+            ? null
+            : new CheckHistory.PageToken(operationList[^1].OperationId);
+
+        return new CheckHistory.Response.Success(operationList, responsePageToken);
     }
 }

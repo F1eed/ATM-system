@@ -10,11 +10,11 @@ public readonly record struct Money
 
     public decimal Value { get; }
 
-    public static Money operator +(Money left, decimal right) => new Money(left.Value + right);
+    public static Money operator +(Money left, decimal right) => new(left.Value + right);
 
-    public static Money operator +(Money left, Money right) => new Money(left.Value + right.Value);
+    public static Money operator +(Money left, Money right) => new(left.Value + right.Value);
 
-    public static Money operator -(Money left, decimal right) => new Money(left.Value - right);
+    public static Money operator -(Money left, decimal right) => new(left.Value - right);
 
-    public static Money operator -(Money left, Money right) => new Money(left.Value - right.Value);
+    public static Money operator -(Money left, Money right) => new(left.Value - right.Value);
 }

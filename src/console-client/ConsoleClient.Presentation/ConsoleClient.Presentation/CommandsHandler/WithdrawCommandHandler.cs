@@ -4,14 +4,14 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
 
-namespace ConsoleClient.Presentation.Commands;
+namespace ConsoleClient.Presentation.CommandsHandler;
 
-public class WithdrawCommand : AsyncCommand
+public class WithdrawCommandHandler : AsyncCommand
 {
-    private readonly IBankService _service;
     private readonly ClientContext _clientContext;
+    private readonly IBankService _service;
 
-    public WithdrawCommand(
+    public WithdrawCommandHandler(
         IBankService service,
         ClientContext clientContext)
     {
@@ -50,7 +50,7 @@ public class WithdrawCommand : AsyncCommand
 
         if (result is Withdraw.Result.Failure failure)
         {
-            AnsiConsole.MarkupLine($"[red]ERROR: {failure.ErrorMessage}[/]");
+            AnsiConsole.MarkupLine($"[red]ERROR: {Markup.Escape(failure.ErrorMessage)}[/]");
             return 1;
         }
 

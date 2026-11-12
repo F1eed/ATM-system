@@ -1,46 +1,55 @@
 <Solution>
   <Folder Name="/common/">
-    <File Path="Directory.Packages.props" />
-    <File Path="Directory.Build.props" />
-    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props"/>
+    <File Path="Directory.Build.props"/>
+    <File Path=".gitignore"/>
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/"/>
   <Folder Name="/src/console-client/">
-    <Project Path="src/console-client/ConsoleClient/ConsoleClient.csproj" />
+    <Project Path="src/console-client/ConsoleClient/ConsoleClient.csproj"/>
   </Folder>
   <Folder Name="/src/console-client/ConsoleClient.Application/">
-    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Abstractions/ConsoleClient.Application.Abstractions.csproj" />
-    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Contracts/ConsoleClient.Application.Contracts.csproj" />
-    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Model/ConsoleClient.Application.Model.csproj" />
-    <Project Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application/ConsoleClient.Application.csproj" />
+    <Project
+            Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Abstractions/ConsoleClient.Application.Abstractions.csproj"/>
+    <Project
+            Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Contracts/ConsoleClient.Application.Contracts.csproj"/>
+    <Project
+            Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application.Model/ConsoleClient.Application.Model.csproj"/>
+    <Project
+            Path="src/console-client/ConsoleClient.Application/ConsoleClient.Application/ConsoleClient.Application.csproj"/>
   </Folder>
   <Folder Name="/src/console-client/ConsoleClient.Infrastructure/">
-    <Project Path="src/console-client/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure.AccountService/ConsoleClient.Infrastructure.AccountService.csproj" />
-    <Project Path="src/console-client/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure.SessionService/ConsoleClient.Infrastructure.SessionService.csproj" />
+    <Project
+            Path="src/console-client/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure.AccountService/ConsoleClient.Infrastructure.AccountService.csproj"/>
+    <Project
+            Path="src/console-client/ConsoleClient.Infrastructure/ConsoleClient.Infrastructure.SessionService/ConsoleClient.Infrastructure.SessionService.csproj"/>
   </Folder>
   <Folder Name="/src/console-client/ConsoleClient.Presentation/">
-    <Project Path="src/console-client/ConsoleClient.Presentation/ConsoleClient.Presentation/ConsoleClient.Presentation.csproj" />
+    <Project
+            Path="src/console-client/ConsoleClient.Presentation/ConsoleClient.Presentation/ConsoleClient.Presentation.csproj"/>
   </Folder>
   <Folder Name="/src/service/">
-    <Project Path="src\service\ATMService\ATMService.csproj" />
+    <Project Path="src\service\ATMService\ATMService.csproj"/>
   </Folder>
   <Folder Name="/src/service/Service.Application/">
-    <Project Path="src/service/Service.Application/Service.Application.Abstractions/Service.Application.Abstractions.csproj" />
-    <Project Path="src/service/Service.Application/Service.Application.Contracts/Service.Application.Contracts.csproj" />
-    <Project Path="src/service/Service.Application/Service.Application.Model/Service.Application.Model.csproj" />
-    <Project Path="src/service/Service.Application/Service.Application/Service.Application.csproj" />
+    <Project
+            Path="src/service/Service.Application/Service.Application.Abstractions/Service.Application.Abstractions.csproj"/>
+    <Project Path="src/service/Service.Application/Service.Application.Contracts/Service.Application.Contracts.csproj"/>
+    <Project Path="src/service/Service.Application/Service.Application.Model/Service.Application.Model.csproj"/>
+    <Project Path="src/service/Service.Application/Service.Application/Service.Application.csproj"/>
   </Folder>
   <Folder Name="/src/service/Service.Infrastructure/">
-    <Project Path="src/service/Service.Infrastructure/Service.Infrastructure.Persistence/Service.Infrastructure.Persistence.csproj" />
+    <Project
+            Path="src/service/Service.Infrastructure/Service.Infrastructure.Persistence/Service.Infrastructure.Persistence.csproj"/>
   </Folder>
   <Folder Name="/src/service/Service.Presentation/">
-    <Project Path="src/service/Service.Presentation/Service.Presentation.Http/Service.Presentation.Http.csproj" />
+    <Project Path="src/service/Service.Presentation/Service.Presentation.Http/Service.Presentation.Http.csproj"/>
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Lab2.Tests/Lab2.Tests.csproj" />
-    <Project Path="tests/Lab3.Tests/Lab3.Tests.csproj" />
-    <Project Path="tests/Lab4.Tests/Lab4.Tests.csproj" />
-    <Project Path="tests/Lab5.Tests/Lab5.Tests.csproj" />
-    <Project Path="tests/Service.Application.Tests/Service.Application.Tests.csproj" />
+    <Project Path="tests/Lab2.Tests/Lab2.Tests.csproj"/>
+    <Project Path="tests/Lab3.Tests/Lab3.Tests.csproj"/>
+    <Project Path="tests/Lab4.Tests/Lab4.Tests.csproj"/>
+    <Project Path="tests/Lab5.Tests/Lab5.Tests.csproj"/>
+    <Project Path="tests/Service.Application.Tests/Service.Application.Tests.csproj"/>
   </Folder>
 </Solution>

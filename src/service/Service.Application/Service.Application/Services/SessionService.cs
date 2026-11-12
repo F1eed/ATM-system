@@ -45,12 +45,12 @@ internal class SessionService : ISessionService
         CreateUserSession.Request request,
         CancellationToken cancellationToken)
     {
-        AccountQuery builder = AccountQuery.Build(builder => builder
+        var builder = AccountQuery.Build(builder => builder
             .WithCardNumber(request.CardNumber));
 
         Account? account = await _context.Accounts
             .QueryAsync(builder, cancellationToken)
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (account is null)
         {

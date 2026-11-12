@@ -9,7 +9,13 @@ public class AdminSession : ISession
 
     public SessionId SessionId { get; }
 
-    public static AdminSession CreateNew() => new(Guid.NewGuid());
+    public static AdminSession CreateNew()
+    {
+        return new AdminSession(Guid.NewGuid());
+    }
 
-    public static AdminSession CreateFromDb(Guid sessionId) => new(sessionId);
+    public static AdminSession CreateFromDb(Guid sessionId)
+    {
+        return new AdminSession(sessionId);
+    }
 }

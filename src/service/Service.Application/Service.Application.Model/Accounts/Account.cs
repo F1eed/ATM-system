@@ -16,6 +16,14 @@ public class Account
         Balance = new Money(balance);
     }
 
+    public AccountId AccountId { get; }
+
+    public string CardNumber { get; }
+
+    public string PinCode { get; }
+
+    public Money Balance { get; private set; }
+
     public static Account CreateNew(
         AccountId accountId,
         string cardNumber,
@@ -32,14 +40,6 @@ public class Account
     {
         return new Account(accountId, cardNumber, pinCode, balance);
     }
-
-    public AccountId AccountId { get; }
-
-    public string CardNumber { get; }
-
-    public string PinCode { get; }
-
-    public Money Balance { get; private set; }
 
     public bool TryWithdraw(decimal amount)
     {

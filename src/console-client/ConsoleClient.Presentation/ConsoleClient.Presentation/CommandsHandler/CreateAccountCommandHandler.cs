@@ -4,14 +4,14 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
 
-namespace ConsoleClient.Presentation.Commands;
+namespace ConsoleClient.Presentation.CommandsHandler;
 
-public class CreateAccountCommand : AsyncCommand
+public class CreateAccountCommandHandler : AsyncCommand
 {
-    private readonly IBankService _service;
     private readonly ClientContext _clientContext;
+    private readonly IBankService _service;
 
-    public CreateAccountCommand(IBankService service, ClientContext clientContext)
+    public CreateAccountCommandHandler(IBankService service, ClientContext clientContext)
     {
         _service = service;
         _clientContext = clientContext;
@@ -63,7 +63,7 @@ public class CreateAccountCommand : AsyncCommand
 
         if (result is CreateAccount.Result.Failure failure)
         {
-            AnsiConsole.MarkupLine($"""[red]Error: {failure.ErrorMessage}[/]""");
+            AnsiConsole.MarkupLine($"[red]ERROR: {Markup.Escape(failure.ErrorMessage)}[/]");
             return 1;
         }
 

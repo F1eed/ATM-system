@@ -4,14 +4,14 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
 
-namespace ConsoleClient.Presentation.Commands;
+namespace ConsoleClient.Presentation.CommandsHandler;
 
-public sealed class CreateUserSessionCommand : AsyncCommand
+public sealed class CreateUserSessionCommandHandler : AsyncCommand
 {
-    private readonly IBankService _service;
     private readonly ClientContext _clientContext;
+    private readonly IBankService _service;
 
-    public CreateUserSessionCommand(
+    public CreateUserSessionCommandHandler(
         IBankService service,
         ClientContext clientContext)
     {

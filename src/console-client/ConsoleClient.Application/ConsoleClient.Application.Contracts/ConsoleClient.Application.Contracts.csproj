@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleClient.Application.Model\ConsoleClient.Application.Model.csproj" />
+    <ProjectReference Include="..\ConsoleClient.Application.Model\ConsoleClient.Application.Model.csproj"/>
   </ItemGroup>
 </Project>

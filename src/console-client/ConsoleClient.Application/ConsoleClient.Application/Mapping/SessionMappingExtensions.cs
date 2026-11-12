@@ -6,5 +6,7 @@ namespace ConsoleClient.Application.Mapping;
 public static class SessionMappingExtensions
 {
     public static SessionDto MapToDto(this Session session)
-        => new SessionDto(session.Id);
+    {
+        return new SessionDto(session.Id);
+    }
 }

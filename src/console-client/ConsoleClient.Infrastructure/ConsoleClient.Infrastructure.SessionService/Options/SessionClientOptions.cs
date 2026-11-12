@@ -4,6 +4,6 @@ namespace ConsoleClient.Infrastructure.SessionService.Options;
 
 public sealed class SessionClientOptions
 {
-    [MinLength(1)]
+    [Required]
     public required Uri Address { get; init; }
 }

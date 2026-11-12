@@ -4,14 +4,14 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Diagnostics;
 
-namespace ConsoleClient.Presentation.Commands;
+namespace ConsoleClient.Presentation.CommandsHandler;
 
-public sealed class DepositCommand : AsyncCommand
+public sealed class DepositCommandHandler : AsyncCommand
 {
-    private readonly IBankService _service;
     private readonly ClientContext _clientContext;
+    private readonly IBankService _service;
 
-    public DepositCommand(
+    public DepositCommandHandler(
         IBankService service,
         ClientContext clientContext)
     {
@@ -50,7 +50,7 @@ public sealed class DepositCommand : AsyncCommand
 
         if (result is Deposit.Result.Failure failure)
         {
-            AnsiConsole.MarkupLine($"[red]ERROR: {failure.ErrorMessage}[/]");
+            AnsiConsole.MarkupLine($"[red]ERROR: {Markup.Escape(failure.ErrorMessage)}[/]");
             return 1;
         }
 

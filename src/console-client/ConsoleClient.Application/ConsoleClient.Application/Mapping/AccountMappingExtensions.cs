@@ -6,5 +6,7 @@ namespace ConsoleClient.Application.Mapping;
 public static class AccountMappingExtensions
 {
     public static AccountDto MapToDto(this Account account)
-        => new AccountDto(account.Balance);
+    {
+        return new AccountDto(account.Balance);
+    }
 }

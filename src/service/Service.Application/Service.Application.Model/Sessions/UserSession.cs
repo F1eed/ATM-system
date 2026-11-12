@@ -10,11 +10,17 @@ public class UserSession : ISession
         AccountId = accountId;
     }
 
-    public SessionId SessionId { get; }
-
     public AccountId AccountId { get; }
 
-    public static UserSession CreateNew(AccountId accountId) => new(accountId, Guid.NewGuid());
+    public SessionId SessionId { get; }
 
-    public static UserSession CreateFromDb(AccountId accountId, Guid sessionId) => new(accountId, sessionId);
+    public static UserSession CreateNew(AccountId accountId)
+    {
+        return new UserSession(accountId, Guid.NewGuid());
+    }
+
+    public static UserSession CreateFromDb(AccountId accountId, Guid sessionId)
+    {
+        return new UserSession(accountId, sessionId);
+    }
 }

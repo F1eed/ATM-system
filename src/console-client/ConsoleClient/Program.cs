@@ -2,7 +2,7 @@
 using ConsoleClient.Infrastructure.AccountService;
 using ConsoleClient.Infrastructure.SessionService;
 using ConsoleClient.Presentation;
-using ConsoleClient.Presentation.Commands;
+using ConsoleClient.Presentation.CommandsHandler;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
@@ -18,6 +18,7 @@ IServiceCollection collection = new ServiceCollection()
     .AddSingleton<IConfiguration>(configuration)
     .AddSingleton(clientContext)
     .AddApplication()
+    .AddConsoleClientPresentation()
     .AddSessionClient()
     .AddAccountClient();
 
@@ -29,25 +30,33 @@ app.Configure(config =>
 {
     config.SetApplicationName("Bank console client");
 
-    config.AddBranch("create", create =>
-    {
-        create.AddBranch("admin", admin =>
-            admin.AddCommand<CreateAdminSessionCommand>("session"));
-
-        create.AddBranch("user", user =>
-                user.AddCommand<CreateUserSessionCommand>("session"));
-
-        create.AddCommand<CreateAccountCommand>("account");
-    });
-
-    config.AddCommand<DepositCommand>("deposit");
-
-    config.AddCommand<WithdrawCommand>("withdraw");
-
-    config.AddBranch("check", check =>
+    config.AddBranch(
+        "create",
+        create =>
         {
-            check.AddCommand<CheckBalanceCommand>("balance");
-            check.AddCommand<CheckHistoryCommand>("history");
+            create.AddBranch(
+                "admin",
+                admin =>
+                    admin.AddCommand<CreateAdminSessionCommandHandler>("session"));
+
+            create.AddBranch(
+                "user",
+                user =>
+                    user.AddCommand<CreateUserSessionCommandHandler>("session"));
+
+            create.AddCommand<CreateAccountCommandHandler>("account");
+        });
+
+    config.AddCommand<DepositCommandHandler>("deposit");
+
+    config.AddCommand<WithdrawCommandHandler>("withdraw");
+
+    config.AddBranch(
+        "check",
+        check =>
+        {
+            check.AddCommand<CheckBalanceCommandHandler>("balance");
+            check.AddCommand<CheckHistoryCommandHandler>("history");
         });
 });
 

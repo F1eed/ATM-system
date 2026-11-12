@@ -27,7 +27,8 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         PostgresConnectionOptions postgresOptions = postgresSection.Get<PostgresConnectionOptions>()
-            ?? throw new InvalidOperationException("Postgres section is not found");
+                                                    ?? throw new InvalidOperationException(
+                                                        "Postgres section is not found");
 
         string connectionString = postgresOptions.ToConnectionString();
 

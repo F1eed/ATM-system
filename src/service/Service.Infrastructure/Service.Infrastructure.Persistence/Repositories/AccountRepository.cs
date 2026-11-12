@@ -22,15 +22,15 @@ internal sealed class AccountRepository : IAccountRepository
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
-        """
-        INSERT INTO accounts (card_number, pin_code, balance)
-        SELECT source.card_number, source.pin_code, source.balance
-        FROM unnest(:card_numbers, :pin_codes, :balances) AS source(card_number, pin_code, balance)
-        ON CONFLICT ON CONSTRAINT accounts_card_number_key DO UPDATE
-        SET pin_code = excluded.pin_code,
-            balance = excluded.balance
-        RETURNING account_id, card_number, pin_code, balance;
-        """;
+            """
+            INSERT INTO accounts (card_number, pin_code, balance)
+            SELECT source.card_number, source.pin_code, source.balance
+            FROM unnest(:card_numbers, :pin_codes, :balances) AS source(card_number, pin_code, balance)
+            ON CONFLICT ON CONSTRAINT accounts_card_number_key DO UPDATE
+            SET pin_code = excluded.pin_code,
+                balance = excluded.balance
+            RETURNING account_id, card_number, pin_code, balance;
+            """;
 
         await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 
@@ -59,14 +59,14 @@ internal sealed class AccountRepository : IAccountRepository
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
-        """
-        SELECT account_id,
-              card_number,
-              pin_code,
-              balance
-        FROM accounts
-        WHERE (length(:number) = 0  or card_number = :number) AND (:id = 0 or :id = account_id);
-        """; // Не особо уверен, что тут правильно сравнивать id с 0, тк при создании пользовательской сессии туда всегда идет 0
+            """
+            SELECT account_id,
+                   card_number,
+                   pin_code,
+                   balance
+            FROM accounts
+            WHERE (length(:number) = 0  or card_number = :number) AND (:id = 0 or :id = account_id);
+            """; // Не особо уверен, что тут правильно сравнивать id с 0, тк при создании пользовательской сессии туда всегда идет 0
 
         await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 

@@ -2,8 +2,6 @@ namespace Service.Application.Model.Accounts;
 
 public readonly record struct AccountId
 {
-    public long Value { get; }
-
     public static readonly AccountId Default = new(0);
 
     public AccountId(long value)
@@ -11,4 +9,6 @@ public readonly record struct AccountId
         ArgumentOutOfRangeException.ThrowIfNegative(value);
         Value = value;
     }
+
+    public long Value { get; }
 }

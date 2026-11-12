@@ -11,8 +11,8 @@ namespace ConsoleClient.Application;
 
 public class BankService : IBankService
 {
-    private readonly ISessionClient _sessionClient;
     private readonly IAccountClient _accountClient;
+    private readonly ISessionClient _sessionClient;
 
     public BankService(ISessionClient sessionClient, IAccountClient accountClient)
     {
@@ -25,8 +25,8 @@ public class BankService : IBankService
         CancellationToken cancellationToken)
     {
         var clientRequest = new ServiceCreateUserSession.Request(
-                request.CardNumber,
-                request.PinCode);
+            request.CardNumber,
+            request.PinCode);
 
         ServiceCreateUserSession.Result clientResponse = await _sessionClient.CreateUserSessionAsync(
             clientRequest,
@@ -73,12 +73,12 @@ public class BankService : IBankService
         CancellationToken cancellationToken)
     {
         var clientRequest = new ServiceDeposit.Request(
-                request.SessionId,
-                request.Amount);
+            request.SessionId,
+            request.Amount);
 
         ServiceDeposit.Result clientResult = await _accountClient.DepositAsync(
-                clientRequest,
-                cancellationToken);
+            clientRequest,
+            cancellationToken);
 
         if (clientResult is ServiceDeposit.Result.Success success)
         {
@@ -98,12 +98,12 @@ public class BankService : IBankService
         CancellationToken cancellationToken)
     {
         var clientRequest = new ServiceWithdraw.Request(
-                request.SessionId,
-                request.Amount);
+            request.SessionId,
+            request.Amount);
 
         ServiceWithdraw.Result clientResult = await _accountClient.WithdrawAsync(
-                clientRequest,
-                cancellationToken);
+            clientRequest,
+            cancellationToken);
 
         if (clientResult is ServiceWithdraw.Result.Success success)
         {
@@ -125,8 +125,8 @@ public class BankService : IBankService
         var clientRequest = new ServiceCheckBalance.Request(request.SessionId);
 
         ServiceCheckBalance.Result clientResponse = await _accountClient.CheckBalanceAsync(
-                clientRequest,
-                cancellationToken);
+            clientRequest,
+            cancellationToken);
 
         if (clientResponse is ServiceCheckBalance.Result.Failure failure)
         {
@@ -145,11 +145,13 @@ public class BankService : IBankService
         CheckHistory.Request request,
         CancellationToken cancellationToken)
     {
-        var clientRequest = new ServiceCheckHistory.Request(request.SessionId);
+        var clientRequest = new ServiceCheckHistory.Request(
+            request.SessionId,
+            request.OperationsCount);
 
         ServiceCheckHistory.Result clientResponse = await _accountClient.CheckHistoryAsync(
-                clientRequest,
-                cancellationToken);
+            clientRequest,
+            cancellationToken);
 
         if (clientResponse is ServiceCheckHistory.Result.Failure failure)
         {
@@ -159,7 +161,7 @@ public class BankService : IBankService
         if (clientResponse is ServiceCheckHistory.Result.Success success)
         {
             return new CheckHistory.Result.Success([
-                .. success.OperationEntries.Select(entry => entry.MapToDto())
+                .. success.OperationEntries.Select(entry => entry.MapToDto()),
             ]);
         }
 
@@ -171,16 +173,16 @@ public class BankService : IBankService
         CancellationToken cancellationToken)
     {
         var clientRequest = new ServiceCreateAccount.Request(
-                request.SessionId,
-                request.Entries
+            request.SessionId,
+            request.Entries
                 .Select(entry => new ServiceCreateAccount.AccountEntry(
                     entry.CardNumber,
                     entry.PinCode))
                 .ToList());
 
         ServiceCreateAccount.Result clientResponse = await _accountClient.CreateAccountAsync(
-                clientRequest,
-                cancellationToken);
+            clientRequest,
+            cancellationToken);
 
         if (clientResponse is ServiceCreateAccount.Result.Failure failure)
         {

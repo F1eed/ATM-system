@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-      <OutputType>Exe</OutputType>
-      <UserSecretsId>dda59132-acac-40b3-9355-3685f5dc8175</UserSecretsId>
-    </PropertyGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.SessionService\ConsoleClient.Infrastructure.SessionService.csproj" />
-      <ProjectReference Include="..\ConsoleClient.Presentation\ConsoleClient.Presentation\ConsoleClient.Presentation.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-      <PackageReference Include="Spectre.Console.Registrars.Microsoft-Di" />
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>dda59132-acac-40b3-9355-3685f5dc8175</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.SessionService\ConsoleClient.Infrastructure.SessionService.csproj"/>
+    <ProjectReference Include="..\ConsoleClient.Infrastructure\ConsoleClient.Infrastructure.AccountService\ConsoleClient.Infrastructure.AccountService.csproj"/>
+    <ProjectReference Include="..\ConsoleClient.Presentation\ConsoleClient.Presentation\ConsoleClient.Presentation.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+    <PackageReference Include="Spectre.Console.Registrars.Microsoft-Di"/>
+  </ItemGroup>
 </Project>

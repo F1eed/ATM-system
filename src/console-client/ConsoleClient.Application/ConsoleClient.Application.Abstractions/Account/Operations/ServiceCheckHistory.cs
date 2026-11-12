@@ -4,7 +4,9 @@ namespace ConsoleClient.Application.Abstractions.Account.Operations;
 
 public static class ServiceCheckHistory
 {
-    public readonly record struct Request(Guid SessionId);
+    public readonly record struct Request(
+        Guid SessionId,
+        int OperationsCount);
 
     public abstract record Result
     {

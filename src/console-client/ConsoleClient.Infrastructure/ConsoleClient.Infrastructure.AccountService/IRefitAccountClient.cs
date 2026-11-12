@@ -29,6 +29,7 @@ public interface IRefitAccountClient
 
     [Get("/api/account/{sessionId}/operations")]
     Task<IApiResponse<CheckHistoryResponse>> CheckHistoryAsync(
-        Guid sessionId,
+        [Query] Guid sessionId,
+        [Query] CheckHistoryRequest request,
         CancellationToken cancellationToken);
 }
