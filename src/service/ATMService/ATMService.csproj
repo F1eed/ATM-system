@@ -13,9 +13,4 @@
   <PropertyGroup>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Update="appsettings.*.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-    </Content>
-  </ItemGroup>
 </Project>
