@@ -55,12 +55,5 @@ public sealed class SessionController : ControllerBase
             CreateUserSession.Response.Failure failure => Unauthorized(failure.Error),
             _ => throw new UnreachableException(),
         };
-
-        // return response switch
-        // {
-        //     CreateUserSession.Response.Success success => Ok(success.Sessions),
-        //     CreateUserSession.Response.Failure failure => Unauthorized(failure.Error),
-        //     _ => throw new UnreachableException(),
-        // }; Убрал это потому что теперь не дтошки возвращаю а тип который хранит в себе энтри, хз норм нет?
     }
 }
