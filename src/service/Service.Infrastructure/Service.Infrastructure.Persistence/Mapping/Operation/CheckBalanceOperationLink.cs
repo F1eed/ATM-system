@@ -13,25 +13,27 @@ public class CheckBalanceOperationLink : OperationLinkBase
         long accountId,
         OperationModel model)
     {
-        return model switch
+        if (model is CheckBalanceOperationModel checkBalance)
         {
-            CheckBalanceOperationModel checkBalance => new MappingToDomainResult.Success(
+            return new MappingToDomainResult.Success(
                 new CheckBalanceOperation(
                     new OccuredAt(occuredAt),
                     new OperationId(operationId),
                     new AccountId(accountId),
-                    new Money(checkBalance.RemainingBalance))),
-            _ => Next.MapToDomain(occuredAt, operationId, accountId, model),
-        };
+                    new Money(checkBalance.RemainingBalance)));
+        }
+
+        return Next.MapToDomain(occuredAt, operationId, accountId, model);
     }
 
     public override MappingToModelResult MapToModel(IOperation operation)
     {
-        return operation switch
+        if (operation is CheckBalanceOperation checkBalance)
         {
-            CheckBalanceOperation checkBalance => new MappingToModelResult.Success(
-                new CheckBalanceOperationModel(checkBalance.Balance.Value)),
-            _ => Next.MapToModel(operation),
-        };
+            return new MappingToModelResult.Success(
+                new CheckBalanceOperationModel(checkBalance.Balance.Value));
+        }
+
+        return Next.MapToModel(operation);
     }
 }

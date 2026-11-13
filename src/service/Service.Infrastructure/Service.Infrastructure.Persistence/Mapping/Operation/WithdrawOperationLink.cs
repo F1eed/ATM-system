@@ -13,25 +13,27 @@ public class WithdrawOperationLink : OperationLinkBase
         long accountId,
         OperationModel model)
     {
-        return model switch
+        if (model is WithdrawOperationModel withdraw)
         {
-            WithdrawOperationModel withdraw => new MappingToDomainResult.Success(
+            return new MappingToDomainResult.Success(
                 new WithdrawOperation(
                     new OccuredAt(occuredAt),
                     new OperationId(operationId),
                     new AccountId(accountId),
-                    new Money(withdraw.Amount))),
-            _ => Next.MapToDomain(occuredAt, operationId, accountId, model),
-        };
+                    new Money(withdraw.Amount)));
+        }
+
+        return Next.MapToDomain(occuredAt, operationId, accountId, model);
     }
 
     public override MappingToModelResult MapToModel(IOperation operation)
     {
-        return operation switch
+        if (operation is WithdrawOperation withdraw)
         {
-            WithdrawOperation withdraw => new MappingToModelResult.Success(
-                new WithdrawOperationModel(withdraw.Amount.Value)),
-            _ => Next.MapToModel(operation),
-        };
+            return new MappingToModelResult.Success(
+                new WithdrawOperationModel(withdraw.Amount.Value));
+        }
+
+        return Next.MapToModel(operation);
     }
 }

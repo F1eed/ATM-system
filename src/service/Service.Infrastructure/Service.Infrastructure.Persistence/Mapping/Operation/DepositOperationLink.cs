@@ -13,25 +13,27 @@ public class DepositOperationLink : OperationLinkBase
         long accountId,
         OperationModel model)
     {
-        return model switch
+        if (model is DepositOperationModel deposit)
         {
-            DepositOperationModel deposit => new MappingToDomainResult.Success(
+            return new MappingToDomainResult.Success(
                 new DepositOperation(
                     new OccuredAt(occuredAt),
                     new OperationId(operationId),
                     new AccountId(accountId),
-                    new Money(deposit.Amount))),
-            _ => Next.MapToDomain(occuredAt, operationId, accountId, model),
-        };
+                    new Money(deposit.Amount)));
+        }
+
+        return Next.MapToDomain(occuredAt, operationId, accountId, model);
     }
 
     public override MappingToModelResult MapToModel(IOperation operation)
     {
-        return operation switch
+        if (operation is DepositOperation deposit)
         {
-            DepositOperation deposit => new MappingToModelResult.Success(
-                new DepositOperationModel(deposit.Amount.Value)),
-            _ => Next.MapToModel(operation),
-        };
+            return new MappingToModelResult.Success(
+                new DepositOperationModel(deposit.Amount.Value));
+        }
+
+        return Next.MapToModel(operation);
     }
 }
