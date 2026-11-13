@@ -6,5 +6,4 @@ public sealed record WithdrawOperation(
     OccuredAt OccuredAt,
     OperationId OperationId,
     AccountId AccountId,
-    Money Amount,
-    Money RemainingBalance) : IOperation;
+    Money Amount) : IOperation;

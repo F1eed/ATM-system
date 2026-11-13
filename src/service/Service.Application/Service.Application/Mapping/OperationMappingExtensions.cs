@@ -36,8 +36,7 @@ public static class OperationMappingExtensions
             operation.OperationId.Value,
             operation.AccountId.Value,
             operation.OccuredAt.Value,
-            operation.Amount.Value,
-            operation.RemainingBalance.Value);
+            operation.Amount.Value);
     }
 
     private static DepositOperationDto MapToDto(this DepositOperation operation)
@@ -46,7 +45,6 @@ public static class OperationMappingExtensions
             operation.OperationId.Value,
             operation.AccountId.Value,
             operation.OccuredAt.Value,
-            operation.Amount.Value,
-            operation.RemainingBalance.Value);
+            operation.Amount.Value);
     }
 }

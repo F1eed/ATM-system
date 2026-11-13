@@ -17,21 +17,21 @@ public static class OperationsMappingExtensions
         };
     }
 
-    public static CheckBalanceOperationDto MapToDto(
+    private static CheckBalanceOperationDto MapToDto(
         this CheckBalanceOperation operation)
     {
         return new CheckBalanceOperationDto(operation.OccuredAt, operation.Balance);
     }
 
-    public static DepositOperationDto MapToDto(
+    private static DepositOperationDto MapToDto(
         this DepositOperation operation)
     {
-        return new DepositOperationDto(operation.OccuredAt, operation.Amount, operation.RemainingBalance);
+        return new DepositOperationDto(operation.OccuredAt, operation.Amount);
     }
 
-    public static WithdrawOperationDto MapToDto(
+    private static WithdrawOperationDto MapToDto(
         this WithdrawOperation operation)
     {
-        return new WithdrawOperationDto(operation.OccuredAt, operation.Amount, operation.RemainingBalance);
+        return new WithdrawOperationDto(operation.OccuredAt, operation.Amount);
     }
 }

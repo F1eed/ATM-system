@@ -20,8 +20,7 @@ public class WithdrawOperationLink : OperationLinkBase
                     new OccuredAt(occuredAt),
                     new OperationId(operationId),
                     new AccountId(accountId),
-                    new Money(withdraw.Amount),
-                    new Money(withdraw.RemainingBalance))),
+                    new Money(withdraw.Amount))),
             _ => Next.MapToDomain(occuredAt, operationId, accountId, model),
         };
     }
@@ -31,9 +30,7 @@ public class WithdrawOperationLink : OperationLinkBase
         return operation switch
         {
             WithdrawOperation withdraw => new MappingToModelResult.Success(
-                new WithdrawOperationModel(
-                    withdraw.Amount.Value,
-                    withdraw.RemainingBalance.Value)),
+                new WithdrawOperationModel(withdraw.Amount.Value)),
             _ => Next.MapToModel(operation),
         };
     }

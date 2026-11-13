@@ -51,8 +51,7 @@ public class CheckHistoryCommandHandler : AsyncCommand<CheckHistoryCommand>
             Table table = new Table()
                 .AddColumn("Occured at")
                 .AddColumn("Operation type")
-                .AddColumn("Amount")
-                .AddColumn("Remaining Balance");
+                .AddColumn("Amount");
 
             // Играл с OCP -> Проиграл.
             foreach (BaseOperationDto dto in success.OperationDtos)
@@ -65,8 +64,7 @@ public class CheckHistoryCommandHandler : AsyncCommand<CheckHistoryCommand>
                                 "yyyy.MM.dd HH:mm:ss tt",
                                 CultureInfo.CurrentCulture),
                         "Deposit",
-                        deposit.Amount.ToString(CultureInfo.InvariantCulture),
-                        deposit.RemainingBalance.ToString(CultureInfo.InvariantCulture));
+                        deposit.Amount.ToString(CultureInfo.InvariantCulture));
                 }
 
                 if (dto is WithdrawOperationDto withdraw)
@@ -77,8 +75,7 @@ public class CheckHistoryCommandHandler : AsyncCommand<CheckHistoryCommand>
                                 "yyyy.MM.dd HH:mm:ss tt",
                                 CultureInfo.CurrentCulture),
                         "Withdraw",
-                        withdraw.Amount.ToString(CultureInfo.InvariantCulture),
-                        withdraw.RemainingBalance.ToString(CultureInfo.InvariantCulture));
+                        withdraw.Amount.ToString(CultureInfo.InvariantCulture));
                 }
 
                 if (dto is CheckBalanceOperationDto checkBalance)

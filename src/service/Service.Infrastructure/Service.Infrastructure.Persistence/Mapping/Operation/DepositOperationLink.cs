@@ -20,8 +20,7 @@ public class DepositOperationLink : OperationLinkBase
                     new OccuredAt(occuredAt),
                     new OperationId(operationId),
                     new AccountId(accountId),
-                    new Money(deposit.Amount),
-                    new Money(deposit.RemainingBalance))),
+                    new Money(deposit.Amount))),
             _ => Next.MapToDomain(occuredAt, operationId, accountId, model),
         };
     }
@@ -31,9 +30,7 @@ public class DepositOperationLink : OperationLinkBase
         return operation switch
         {
             DepositOperation deposit => new MappingToModelResult.Success(
-                new DepositOperationModel(
-                    deposit.Amount.Value,
-                    deposit.RemainingBalance.Value)),
+                new DepositOperationModel(deposit.Amount.Value)),
             _ => Next.MapToModel(operation),
         };
     }

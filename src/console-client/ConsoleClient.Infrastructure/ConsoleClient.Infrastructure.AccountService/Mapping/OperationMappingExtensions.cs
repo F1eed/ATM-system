@@ -27,7 +27,7 @@ public static class OperationMappingExtensions
             entry.OccuredAt,
             entry.OperationId,
             entry.AccountId,
-            entry.RemainingBalance);
+            entry.Balance);
     }
 
     public static IOperation MapToModel(this DepositOperationEntry entry)
@@ -36,8 +36,7 @@ public static class OperationMappingExtensions
             entry.OccuredAt,
             entry.OperationId,
             entry.AccountId,
-            entry.Amount,
-            entry.RemainingBalance);
+            entry.Amount);
     }
 
     public static IOperation MapToModel(this WithdrawOperationEntry entry)
@@ -46,7 +45,6 @@ public static class OperationMappingExtensions
             entry.OccuredAt,
             entry.OperationId,
             entry.AccountId,
-            entry.Amount,
-            entry.RemainingBalance);
+            entry.Amount);
     }
 }
