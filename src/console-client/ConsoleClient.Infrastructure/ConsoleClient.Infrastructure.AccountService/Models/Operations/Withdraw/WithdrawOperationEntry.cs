@@ -1,4 +1,4 @@
-namespace ConsoleClient.Infrastructure.AccountService.Models.Operations;
+namespace ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
 
 public sealed record WithdrawOperationEntry(
     long OperationId,

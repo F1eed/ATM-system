@@ -1,4 +1,4 @@
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.Deposit;
 
 public class DepositRequest
 {

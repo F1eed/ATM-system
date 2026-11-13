@@ -1,4 +1,8 @@
-using ConsoleClient.Infrastructure.AccountService.Models;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckBalance;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckHistory;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.CreateAccount;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
 using Refit;
 
 namespace ConsoleClient.Infrastructure.AccountService;

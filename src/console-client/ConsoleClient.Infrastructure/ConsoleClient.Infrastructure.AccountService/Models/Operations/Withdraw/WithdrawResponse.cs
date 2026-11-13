@@ -1,4 +1,4 @@
-namespace ConsoleClient.Infrastructure.AccountService.Models;
+namespace ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
 
 public sealed record WithdrawResponse(WithdrawResponse.AccountEntry Entry)
 {

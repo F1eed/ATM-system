@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.CreateUser;
 
 public class CreateUserRequest
 {

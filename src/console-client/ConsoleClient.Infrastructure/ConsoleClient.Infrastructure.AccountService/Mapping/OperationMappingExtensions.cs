@@ -1,5 +1,8 @@
 using ConsoleClient.Application.Model.Operations;
 using ConsoleClient.Infrastructure.AccountService.Models.Operations;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckBalance;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
 using System.Diagnostics;
 
 namespace ConsoleClient.Infrastructure.AccountService.Mapping;

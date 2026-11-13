@@ -1,3 +1,6 @@
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckBalance;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
+using ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
 using System.Text.Json.Serialization;
 
 namespace ConsoleClient.Infrastructure.AccountService.Models.Operations;

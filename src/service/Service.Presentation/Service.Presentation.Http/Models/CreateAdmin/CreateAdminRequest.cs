@@ -1,4 +1,4 @@
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.CreateAdmin;
 
 public sealed class CreateAdminRequest
 {

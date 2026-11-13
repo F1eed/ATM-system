@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.CreateAccount;
 
 public sealed class CreateAccountRequest
 {

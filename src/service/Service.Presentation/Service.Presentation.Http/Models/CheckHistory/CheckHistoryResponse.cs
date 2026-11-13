@@ -1,6 +1,6 @@
 using Service.Application.Contracts.Operation.Models;
 
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.CheckHistory;
 
 public sealed record CheckHistoryResponse
 {

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Application.Contracts.Session;
 using Service.Application.Contracts.Session.Operations;
-using Service.Presentation.Http.Models;
+using Service.Presentation.Http.Models.CreateAdmin;
+using Service.Presentation.Http.Models.CreateUser;
 using System.Diagnostics;
 
 namespace Service.Presentation.Http.Controllers;

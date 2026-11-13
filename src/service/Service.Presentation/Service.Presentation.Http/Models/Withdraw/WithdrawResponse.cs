@@ -1,4 +1,4 @@
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.Withdraw;
 
 public sealed record WithdrawResponse(WithdrawResponse.WithdrawAccountEntry Entry)
 {

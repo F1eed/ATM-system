@@ -1,4 +1,4 @@
-namespace ConsoleClient.Infrastructure.AccountService.Models.Operations;
+namespace ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
 
 public sealed record DepositOperationEntry(
     long OperationId,

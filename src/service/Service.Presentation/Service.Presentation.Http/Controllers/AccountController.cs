@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Application.Contracts.Account;
 using Service.Application.Contracts.Account.Operations;
-using Service.Presentation.Http.Models;
+using Service.Presentation.Http.Models.CheckBalance;
+using Service.Presentation.Http.Models.CheckHistory;
+using Service.Presentation.Http.Models.CreateAccount;
+using Service.Presentation.Http.Models.Deposit;
+using Service.Presentation.Http.Models.Withdraw;
 using System.Diagnostics;
 using System.Text.Json;
 

@@ -1,4 +1,4 @@
-namespace ConsoleClient.Infrastructure.AccountService.Models.Operations;
+namespace ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckBalance;
 
 public sealed record CheckBalanceOperationEntry(
     long OperationId,

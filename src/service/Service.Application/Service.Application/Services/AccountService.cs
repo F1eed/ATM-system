@@ -124,7 +124,6 @@ internal class AccountService : IAccountService
             new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            new Money(request.Amount),
             account.Balance);
 
         await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
@@ -179,7 +178,6 @@ internal class AccountService : IAccountService
             new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            new Money(request.Amount),
             account.Balance);
 
         await _context.Operations

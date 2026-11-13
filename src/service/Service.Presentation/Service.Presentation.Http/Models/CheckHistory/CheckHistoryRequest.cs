@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace Service.Presentation.Http.Models;
+namespace Service.Presentation.Http.Models.CheckHistory;
 
 public sealed class CheckHistoryRequest
 {

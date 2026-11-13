@@ -1,4 +1,4 @@
-namespace ConsoleClient.Infrastructure.AccountService.Models;
+namespace ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
 
 public record DepositResponse(DepositResponse.AccountEntry Entry)
 {
