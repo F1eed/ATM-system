@@ -13,44 +13,53 @@ namespace Service.Infrastructure.Persistence;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructurePersistence(
-        this IServiceCollection collection,
-        IConfiguration configuration)
+    extension(IServiceCollection collection)
     {
-        IConfigurationSection postgresSection = configuration
-            .GetSection("Infrastructure:Persistence:Postgres");
+        public IServiceCollection AddInfrastructurePersistence(IConfiguration configuration)
+        {
+            collection.AddPostgresDatabase(configuration);
+            collection.AddSingleton(OperationChainFactory.Create());
+            collection.AddRepositories();
 
-        collection
-            .AddOptions<PostgresConnectionOptions>()
-            .BindConfiguration("Infrastructure:Persistence:Postgres")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            return collection;
+        }
 
-        PostgresConnectionOptions postgresOptions = postgresSection.Get<PostgresConnectionOptions>()
-                                                    ?? throw new InvalidOperationException(
-                                                        "Postgres section is not found");
+        private void AddPostgresDatabase(IConfiguration configuration)
+        {
+            IConfigurationSection postgresSection = configuration
+                .GetSection("Infrastructure:Persistence:Postgres");
 
-        string connectionString = postgresOptions.ToConnectionString();
+            collection
+                .AddOptions<PostgresConnectionOptions>()
+                .BindConfiguration("Infrastructure:Persistence:Postgres")
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
-        collection.AddNpgsqlDataSource(connectionString);
+            PostgresConnectionOptions postgresOptions = postgresSection.Get<PostgresConnectionOptions>()
+                                                        ?? throw new InvalidOperationException(
+                                                            "Postgres section is not found");
 
-        collection
-            .AddFluentMigratorCore()
-            .ConfigureRunner(runnerBuilder => runnerBuilder
-                .AddPostgres()
-                .WithGlobalConnectionString(connectionString)
-                .WithMigrationsIn(typeof(IAssemblyMarker).Assembly))
-            .AddLogging(logger => logger.AddFluentMigratorConsole());
+            string connectionString = postgresOptions.ToConnectionString();
 
-        collection.AddSingleton(OperationChainFactory.Create());
+            collection.AddNpgsqlDataSource(connectionString);
 
-        collection.AddScoped<IPersistenceContext, PersistenceContext>();
-        collection.AddScoped<IPersistenceTransactionProvider, PostgresPersistenceTransactionProvider>();
+            collection
+                .AddFluentMigratorCore()
+                .ConfigureRunner(runnerBuilder => runnerBuilder
+                    .AddPostgres()
+                    .WithGlobalConnectionString(connectionString)
+                    .WithMigrationsIn(typeof(IAssemblyMarker).Assembly))
+                .AddLogging(logger => logger.AddFluentMigratorConsole());
 
-        collection.AddScoped<IAccountRepository, AccountRepository>();
-        collection.AddScoped<IOperationRepository, OperationRepository>();
-        collection.AddScoped<ISessionRepository, SessionRepository>();
+            collection.AddScoped<IPersistenceTransactionProvider, PostgresPersistenceTransactionProvider>();
+            collection.AddScoped<IPersistenceContext, PersistenceContext>();
+        }
 
-        return collection;
+        private void AddRepositories()
+        {
+            collection.AddScoped<IAccountRepository, AccountRepository>();
+            collection.AddScoped<IOperationRepository, OperationRepository>();
+            collection.AddScoped<ISessionRepository, SessionRepository>();
+        }
     }
 }
