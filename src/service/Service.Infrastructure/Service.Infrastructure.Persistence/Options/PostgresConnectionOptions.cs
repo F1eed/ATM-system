@@ -8,16 +8,16 @@ public class PostgresConnectionOptions
     public required string Host { get; init; } = string.Empty;
 
     [Range(1, 65535)]
-    public required int Port { get; init; } = 5432;
+    public required int Port { get; init; }
 
     [MinLength(1)]
-    public required string Database { get; init; } = "PGUSER";
+    public required string Database { get; init; } = string.Empty;
 
     [MinLength(1)]
-    public required string Username { get; init; } = "PGUSER";
+    public required string Username { get; init; } = string.Empty;
 
     [MinLength(1)]
-    public required string Password { get; init; } = "PGPASSWORD";
+    public required string Password { get; init; } = string.Empty;
 
     public string ToConnectionString()
     {
