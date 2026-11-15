@@ -74,7 +74,7 @@ internal sealed class OperationRepository : IOperationRepository
         command.Parameters.Add(new NpgsqlParameter("account_id", query.AccountId.Value));
         command.Parameters.Add(new NpgsqlParameter<long?>(
             "key_cursor",
-            query.KeyCursor));
+            query.KeyCursor?.Value));
         command.Parameters.Add(new NpgsqlParameter("page_size", query.PageSize));
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);

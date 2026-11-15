@@ -137,7 +137,7 @@ public sealed class AccountController : ControllerBase
         var applicationRequest = new CheckHistory.Request(
             sessionId,
             pageToken,
-            Math.Min(request.PageSize, maxPageSize));
+            Math.Max(request.PageSize, maxPageSize));
 
         CheckHistory.Response applicationResponse = await _accountService.CheckHistoryAsync(
             applicationRequest,
@@ -157,7 +157,7 @@ public sealed class AccountController : ControllerBase
         {
             string? responsePageToken = success.NextPageToken is null
                 ? null
-                : JsonSerializer.Serialize(success.NextPageToken.Value.Key);
+                : JsonSerializer.Serialize(success.NextPageToken.Value);
 
             return Ok(new CheckHistoryResponse
             {
