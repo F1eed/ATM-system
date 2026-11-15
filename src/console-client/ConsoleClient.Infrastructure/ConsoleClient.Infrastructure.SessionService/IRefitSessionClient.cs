@@ -1,4 +1,5 @@
-using ConsoleClient.Infrastructure.SessionService.Models;
+using ConsoleClient.Infrastructure.SessionService.Models.CreateAdmin;
+using ConsoleClient.Infrastructure.SessionService.Models.CreateUser;
 using Refit;
 
 namespace ConsoleClient.Infrastructure.SessionService;

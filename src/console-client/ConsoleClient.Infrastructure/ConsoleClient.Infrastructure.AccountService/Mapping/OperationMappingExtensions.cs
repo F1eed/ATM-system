@@ -30,7 +30,7 @@ public static class OperationMappingExtensions
             entry.OccuredAt,
             entry.OperationId,
             entry.AccountId,
-            entry.Balance);
+            entry.RemainingBalance);
     }
 
     public static IOperation MapToModel(this DepositOperationEntry entry)

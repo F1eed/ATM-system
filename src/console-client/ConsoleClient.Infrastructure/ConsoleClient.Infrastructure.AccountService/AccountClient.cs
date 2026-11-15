@@ -8,23 +8,19 @@ using ConsoleClient.Infrastructure.AccountService.Models.Operations.CheckHistory
 using ConsoleClient.Infrastructure.AccountService.Models.Operations.CreateAccount;
 using ConsoleClient.Infrastructure.AccountService.Models.Operations.Deposit;
 using ConsoleClient.Infrastructure.AccountService.Models.Operations.Withdraw;
-using ConsoleClient.Infrastructure.AccountService.Options;
-using Microsoft.Extensions.Options;
 using Refit;
+using System.Text;
 
 namespace ConsoleClient.Infrastructure.AccountService;
 
 public class AccountClient : IAccountClient
 {
-    private readonly IOptionsMonitor<AccountClientOptions> _options;
     private readonly IRefitAccountClient _refitAccountClient;
 
     public AccountClient(
-        IRefitAccountClient refitAccountClient,
-        IOptionsMonitor<AccountClientOptions> options)
+        IRefitAccountClient refitAccountClient)
     {
         _refitAccountClient = refitAccountClient;
-        _options = options;
     }
 
     public async Task<ServiceCreateAccount.Result> CreateAccountAsync(
@@ -49,8 +45,27 @@ public class AccountClient : IAccountClient
 
         if (response.HasResponseError(out ApiException? apiException))
         {
-            return new ServiceCreateAccount.Result.Failure(
-                apiException.Content ?? string.Empty);
+            var sb = new StringBuilder();
+
+            if (apiException is ValidationApiException validationApiException)
+            {
+                foreach (string[] errors in validationApiException.Content?.Errors.Values
+                         ?? Enumerable.Empty<string[]>())
+                {
+                    foreach (string error in errors)
+                    {
+                        sb.AppendLine($"{error}");
+                    }
+                }
+
+                sb.Remove(sb.Length - 1, 1);
+            }
+            else
+            {
+                sb.AppendLine(apiException.Message);
+            }
+
+            return new ServiceCreateAccount.Result.Failure(sb.ToString());
         }
 
         // Норм что "?"
@@ -146,7 +161,7 @@ public class AccountClient : IAccountClient
     {
         var operations = new List<IOperation>(request.OperationsCount);
 
-        int pageSize = _options.CurrentValue.PageSize;
+        int pageSize = request.OperationsCount;
         string? pageToken = null;
 
         do
@@ -163,8 +178,27 @@ public class AccountClient : IAccountClient
 
             if (response.HasResponseError(out ApiException? apiException))
             {
-                return new ServiceCheckHistory.Result.Failure(
-                    apiException.Content ?? string.Empty);
+                var sb = new StringBuilder();
+
+                if (apiException is ValidationApiException validationApiException)
+                {
+                    foreach (string[] errors in validationApiException.Content?.Errors.Values
+                             ?? Enumerable.Empty<string[]>())
+                    {
+                        foreach (string error in errors)
+                        {
+                            sb.AppendLine($"{error}");
+                        }
+                    }
+
+                    sb.Remove(sb.Length - 1, 1);
+                }
+                else
+                {
+                    sb.AppendLine(apiException.Message);
+                }
+
+                return new ServiceCheckHistory.Result.Failure(sb.ToString());
             }
 
             if (response.IsSuccessfulWithContent is false)

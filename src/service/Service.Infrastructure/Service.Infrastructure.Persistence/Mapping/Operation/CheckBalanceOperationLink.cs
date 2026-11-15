@@ -31,7 +31,7 @@ public class CheckBalanceOperationLink : OperationLinkBase
         if (operation is CheckBalanceOperation checkBalance)
         {
             return new MappingToModelResult.Success(
-                new CheckBalanceOperationModel(checkBalance.Balance.Value));
+                new CheckBalanceOperationModel(checkBalance.RemainingBalance.Value));
         }
 
         return Next.MapToModel(operation);

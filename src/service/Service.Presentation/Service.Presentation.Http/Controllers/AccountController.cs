@@ -127,6 +127,8 @@ public sealed class AccountController : ControllerBase
         [FromQuery] CheckHistoryRequest request,
         CancellationToken cancellationToken)
     {
+        const int maxPageSize = 10;
+
         CheckHistory.PageToken? pageToken = request.PageToken is null
             ? null
             : new CheckHistory.PageToken(
@@ -135,7 +137,7 @@ public sealed class AccountController : ControllerBase
         var applicationRequest = new CheckHistory.Request(
             sessionId,
             pageToken,
-            request.PageSize);
+            Math.Min(request.PageSize, maxPageSize));
 
         CheckHistory.Response applicationResponse = await _accountService.CheckHistoryAsync(
             applicationRequest,
@@ -153,9 +155,9 @@ public sealed class AccountController : ControllerBase
 
         if (applicationResponse is CheckHistory.Response.Success success)
         {
-            string? responsePageToken = success.PageToken is null
+            string? responsePageToken = success.NextPageToken is null
                 ? null
-                : JsonSerializer.Serialize(success.PageToken.Value.Key);
+                : JsonSerializer.Serialize(success.NextPageToken.Value.Key);
 
             return Ok(new CheckHistoryResponse
             {

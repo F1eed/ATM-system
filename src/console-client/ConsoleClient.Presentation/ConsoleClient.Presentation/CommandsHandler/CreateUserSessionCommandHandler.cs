@@ -47,6 +47,7 @@ public sealed class CreateUserSessionCommandHandler : AsyncCommand
         if (result is CreateUserSession.Result.Success success)
         {
             _clientContext.UserSessionId = success.Session.SessionId;
+            _clientContext.AdminSessionId = null;
             AnsiConsole.Console.MarkupLine("[green]Success[/]");
             return 0;
         }

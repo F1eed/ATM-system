@@ -10,8 +10,8 @@ public sealed class CheckHistoryCommand : CommandSettings
 
     public override ValidationResult Validate()
     {
-        return OperationsCount is not null
+        return OperationsCount is null or > 0
             ? ValidationResult.Success()
-            : ValidationResult.Error("invalid parameter --count(must be > 0");
+            : ValidationResult.Error("invalid parameter --count(must be > 0)");
     }
 }

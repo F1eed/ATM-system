@@ -20,7 +20,7 @@ public static class OperationsMappingExtensions
     private static CheckBalanceOperationDto MapToDto(
         this CheckBalanceOperation operation)
     {
-        return new CheckBalanceOperationDto(operation.OccuredAt, operation.Balance);
+        return new CheckBalanceOperationDto(operation.OccuredAt, operation.RemainingBalance);
     }
 
     private static DepositOperationDto MapToDto(

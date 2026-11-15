@@ -1,7 +1,8 @@
 using ConsoleClient.Application.Abstractions.Session;
 using ConsoleClient.Application.Abstractions.Session.Operations;
 using ConsoleClient.Application.Model;
-using ConsoleClient.Infrastructure.SessionService.Models;
+using ConsoleClient.Infrastructure.SessionService.Models.CreateAdmin;
+using ConsoleClient.Infrastructure.SessionService.Models.CreateUser;
 using Refit;
 
 namespace ConsoleClient.Infrastructure.SessionService;

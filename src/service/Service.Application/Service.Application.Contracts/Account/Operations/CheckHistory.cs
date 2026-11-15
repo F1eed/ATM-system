@@ -17,7 +17,7 @@ public static class CheckHistory
 
         public sealed record Success(
             IReadOnlyCollection<BaseOperationDto> Operations,
-            PageToken? PageToken) : Response;
+            PageToken? NextPageToken) : Response;
 
         public sealed record NotUserSession : Response;
 

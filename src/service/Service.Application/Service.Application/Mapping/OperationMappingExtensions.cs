@@ -27,7 +27,7 @@ public static class OperationMappingExtensions
             operation.OperationId.Value,
             operation.AccountId.Value,
             operation.OccuredAt.Value,
-            operation.Balance.Value);
+            operation.RemainingBalance.Value);
     }
 
     private static WithdrawOperationDto MapToDto(this WithdrawOperation operation)

@@ -9,6 +9,6 @@ public sealed class CheckHistoryRequest
     public string? PageToken { get; init; }
 
     [FromQuery(Name = "pageSize")]
-    [Range(1, 10)]
+    [Range(1, int.MaxValue)]
     public int PageSize { get; init; }
 }

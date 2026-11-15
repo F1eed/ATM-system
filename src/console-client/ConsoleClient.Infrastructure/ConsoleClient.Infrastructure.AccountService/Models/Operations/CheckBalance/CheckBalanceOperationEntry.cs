@@ -4,4 +4,4 @@ public sealed record CheckBalanceOperationEntry(
     long OperationId,
     long AccountId,
     DateTimeOffset OccuredAt,
-    decimal Balance) : BaseOperationEntry(OperationId, AccountId, OccuredAt);
+    decimal RemainingBalance) : BaseOperationEntry(OperationId, AccountId, OccuredAt);

@@ -6,4 +6,4 @@ public sealed record CheckBalanceOperation(
     OccuredAt OccuredAt,
     OperationId OperationId,
     AccountId AccountId,
-    Money Balance) : IOperation;
+    Money RemainingBalance) : IOperation;

@@ -124,7 +124,7 @@ internal class AccountService : IAccountService
             new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            account.Balance);
+            new Money(request.Amount));
 
         await _context.Operations.AddOrUpdateAsync([operation], cancellationToken);
 
@@ -178,7 +178,7 @@ internal class AccountService : IAccountService
             new OccuredAt(DateTimeOffset.UtcNow),
             OperationId.Default,
             account.AccountId,
-            account.Balance);
+            new Money(request.Amount));
 
         await _context.Operations
             .AddOrUpdateAsync([operation], cancellationToken);
@@ -208,9 +208,13 @@ internal class AccountService : IAccountService
             return new CheckHistory.Response.NotUserSession();
         }
 
+        OperationId? cursor = request.PageToken is not null
+            ? new OperationId(request.PageToken.Value.Key)
+            : null;
+
         var operationQuery = OperationQuery.Build(builder => builder
             .WithAccountId(userSession.AccountId)
-            .WithKeyCursor(request.PageToken?.Key)
+            .WithKeyCursor(cursor)
             .WithPageSize(request.PageSize));
 
         IAsyncEnumerable<IOperation> operations = _context.Operations

@@ -86,8 +86,7 @@ public class CheckHistoryCommandHandler : AsyncCommand<CheckHistoryCommand>
                                 "yyyy.MM.dd HH:mm:ss tt",
                                 CultureInfo.CurrentCulture),
                         "Check Balance",
-                        "-",
-                        checkBalance.Balance.ToString(CultureInfo.InvariantCulture));
+                        checkBalance.RemainingBalance.ToString(CultureInfo.InvariantCulture));
                 }
             }
 
