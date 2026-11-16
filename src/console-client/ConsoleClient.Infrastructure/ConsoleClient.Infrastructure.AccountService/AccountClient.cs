@@ -68,7 +68,6 @@ public class AccountClient : IAccountClient
             return new ServiceCreateAccount.Result.Failure(sb.ToString());
         }
 
-        // Норм что "?"
         return new ServiceCreateAccount.Result.Failure(
             response.Error?.Message ?? string.Empty);
     }
@@ -86,7 +85,6 @@ public class AccountClient : IAccountClient
 
         if (response.IsSuccessfulWithContent)
         {
-            // А норм ли тут создавать доменную модельку клиента? (Думаю норм учитывая что это инфра)
             return new ServiceDeposit.Result.Success(new Account(
                 response.Content.Entry.CardNumber,
                 response.Content.Entry.Balance));
@@ -98,7 +96,6 @@ public class AccountClient : IAccountClient
                 apiException.Content ?? string.Empty);
         }
 
-        // Норм что "?"
         return new ServiceDeposit.Result.Failure(
             response.Error?.Message ?? string.Empty);
     }

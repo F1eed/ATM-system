@@ -21,7 +21,6 @@ public class CreateAccountCommandHandler : AsyncCommand
         CommandContext context,
         CancellationToken cancellationToken)
     {
-        // Сомнительно
         if (_clientContext.AdminSessionId is null)
         {
             AnsiConsole.MarkupLine("[red]Authentication Error: You must login to admin session[/]");
@@ -52,7 +51,6 @@ public class CreateAccountCommandHandler : AsyncCommand
         }
         while (confirmed);
 
-        // Норм у наллабл брать Value если проверил до этого на null и никак не менял?
         var request = new CreateAccount.Request(
             _clientContext.AdminSessionId.Value,
             entries);

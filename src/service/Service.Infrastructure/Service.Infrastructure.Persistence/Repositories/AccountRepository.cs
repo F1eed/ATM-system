@@ -59,20 +59,21 @@ internal sealed class AccountRepository : IAccountRepository
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const string sql =
-            """
+        """
             SELECT account_id,
                    card_number,
                    pin_code,
                    balance
             FROM accounts
-            WHERE (length(:number) = 0  or card_number = :number) AND (:id = 0 or :id = account_id);
-            """; // Не особо уверен, что тут правильно сравнивать id с 0, тк при создании пользовательской сессии туда всегда идет 0
+            WHERE (cardinality(:numbers) = 0  or card_number = ANY(:numbers))
+              AND (cardinality(:ids) = 0 or account_id = ANY(:ids));
+        """;
 
         await using NpgsqlConnection connection = await _dataSource.OpenConnectionAsync(cancellationToken);
 
         await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.Add(new NpgsqlParameter("number", query.CardNumber));
-        command.Parameters.Add(new NpgsqlParameter("id", query.Id.Value));
+        command.Parameters.Add(new NpgsqlParameter("numbers", query.CardNumbers));
+        command.Parameters.Add(new NpgsqlParameter("ids", query.Ids.Select(x => x.Value).ToList()));
 
         await using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 

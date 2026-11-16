@@ -15,5 +15,5 @@ public static class CreateAccount
         public sealed record Failure(string ErrorMessage) : Result;
     }
 
-    public record AccountEntry(string CardNumber, string PinCode); // хз как будто не оч норм
+    public record AccountEntry(string CardNumber, string PinCode);
 }
