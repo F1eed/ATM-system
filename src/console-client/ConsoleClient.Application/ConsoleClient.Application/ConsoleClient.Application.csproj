@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleClient.Application.Abstractions\ConsoleClient.Application.Abstractions.csproj"/>
+    <ProjectReference Include="..\ConsoleClient.Application.Contracts\ConsoleClient.Application.Contracts.csproj"/>
+    <ProjectReference Include="..\ConsoleClient.Application.Model\ConsoleClient.Application.Model.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+  </ItemGroup>
 </Project>

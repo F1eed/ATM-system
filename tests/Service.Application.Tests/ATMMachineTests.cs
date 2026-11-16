@@ -1,0 +1,243 @@
+using NSubstitute;
+using Service.Application.Abstractions.Persistence;
+using Service.Application.Abstractions.Persistence.Queries;
+using Service.Application.Abstractions.Persistence.Repositories;
+using Service.Application.Abstractions.Persistence.Transactions;
+using Service.Application.Contracts.Account.Operations;
+using Service.Application.Model.Accounts;
+using Service.Application.Model.Sessions;
+using Service.Application.Services;
+using System.Transactions;
+using Xunit;
+
+namespace Lab1.Tests;
+
+public class AtmMachineTests
+{
+    [Fact]
+    public async Task ATMMachineTest_Should_Withdraw_When_EnoughMoneyInTheAccount()
+    {
+        // Arrange
+        IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
+        ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
+        IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
+        var account = Account.CreateNew(
+            new AccountId(5),
+            "1488",
+            "239");
+
+        var session = UserSession.CreateNew(account.AccountId);
+
+        sessionRepository.QueryAsync(
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<ISession>([session]).ToAsyncEnumerable());
+
+        accountRepository.QueryAsync(
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account]).ToAsyncEnumerable());
+
+        account.TryDeposit(1000m);
+
+        IPersistenceContext context = Substitute.For<IPersistenceContext>();
+        context.Accounts.Returns(accountRepository);
+        context.Operations.Returns(operationRepository);
+        context.Sessions.Returns(sessionRepository);
+        context.Accounts.AddOrUpdateAsync(
+                Arg.Any<IReadOnlyCollection<Account>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account])
+                .ToAsyncEnumerable());
+
+        IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
+
+        IPersistenceTransaction transaction = Substitute.For<IPersistenceTransaction>();
+
+        transactionProvider
+            .BeginTransactionAsync(
+                Arg.Any<IsolationLevel>(),
+                Arg.Any<CancellationToken>())
+            .Returns(transaction);
+
+        var accountService = new AccountService(
+            context,
+            transactionProvider);
+
+        // Act
+        Withdraw.Response response = await accountService.WithdrawAsync(
+            new Withdraw.Request(session.SessionId.Value, 300m),
+            CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Withdraw.Response.Success>(response);
+        Assert.Equal(700m, account.Balance.Value);
+    }
+
+    [Fact]
+    public async Task ATMMachineTest_Should_NoWithdraw_When_NotEnoughMoneyInTheAccount()
+    {
+        // Arrange
+        IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
+        ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
+        IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
+        var account = Account.CreateNew(
+            new AccountId(5),
+            "1488",
+            "239");
+
+        var session = UserSession.CreateNew(account.AccountId);
+
+        sessionRepository.QueryAsync(
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<ISession>([session]).ToAsyncEnumerable());
+
+        accountRepository.QueryAsync(
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account]).ToAsyncEnumerable());
+
+        account.TryDeposit(1000m);
+
+        IPersistenceContext context = Substitute.For<IPersistenceContext>();
+        context.Accounts.Returns(accountRepository);
+        context.Operations.Returns(operationRepository);
+        context.Sessions.Returns(sessionRepository);
+
+        IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
+
+        IPersistenceTransaction transaction = Substitute.For<IPersistenceTransaction>();
+
+        transactionProvider
+            .BeginTransactionAsync(
+                Arg.Any<IsolationLevel>(),
+                Arg.Any<CancellationToken>())
+            .Returns(transaction);
+
+        var accountService = new AccountService(
+            context,
+            transactionProvider);
+
+        // Act
+        Withdraw.Response response = await accountService
+            .WithdrawAsync(
+                new Withdraw.Request(session.SessionId.Value, 3000m),
+                CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Withdraw.Response.Failure>(response);
+        Assert.Equal(1000m, account.Balance.Value);
+    }
+
+    [Fact]
+    public async Task ATMMachineTest_Should_Deposit_When_DepositValidAmount()
+    {
+        // Arrange
+        IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
+        ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
+        IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
+        var account = Account.CreateNew(
+            new AccountId(5),
+            "1488",
+            "239");
+
+        var session = UserSession.CreateNew(account.AccountId);
+
+        sessionRepository.QueryAsync(
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<ISession>([session]).ToAsyncEnumerable());
+
+        accountRepository.QueryAsync(
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account]).ToAsyncEnumerable());
+
+        IPersistenceContext context = Substitute.For<IPersistenceContext>();
+        context.Accounts.Returns(accountRepository);
+        context.Operations.Returns(operationRepository);
+        context.Sessions.Returns(sessionRepository);
+        context.Accounts.AddOrUpdateAsync(
+                Arg.Any<IReadOnlyCollection<Account>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account])
+                .ToAsyncEnumerable());
+
+        IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
+
+        IPersistenceTransaction transaction = Substitute.For<IPersistenceTransaction>();
+
+        transactionProvider
+            .BeginTransactionAsync(
+                Arg.Any<IsolationLevel>(),
+                Arg.Any<CancellationToken>())
+            .Returns(transaction);
+
+        var accountService = new AccountService(
+            context,
+            transactionProvider);
+
+        // Act
+        Deposit.Response response = await accountService.DepositAsync(
+            new Deposit.Request(session.SessionId.Value, 1000m),
+            CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Deposit.Response.Success>(response);
+        Assert.Equal(1000m, account.Balance.Value);
+    }
+
+    [Fact]
+    public async Task ATMMachineTest_Should_NotDeposit_When_DepositInvalidAmount()
+    {
+        // Arrange
+        IAccountRepository accountRepository = Substitute.For<IAccountRepository>();
+        ISessionRepository sessionRepository = Substitute.For<ISessionRepository>();
+        IOperationRepository operationRepository = Substitute.For<IOperationRepository>();
+        var account = Account.CreateNew(
+            new AccountId(5),
+            "1488",
+            "239");
+
+        var session = UserSession.CreateNew(account.AccountId);
+
+        sessionRepository.QueryAsync(
+                Arg.Any<SessionQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<ISession>([session]).ToAsyncEnumerable());
+
+        accountRepository.QueryAsync(
+                Arg.Any<AccountQuery>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Account>([account]).ToAsyncEnumerable());
+
+        IPersistenceContext context = Substitute.For<IPersistenceContext>();
+        context.Accounts.Returns(accountRepository);
+        context.Operations.Returns(operationRepository);
+        context.Sessions.Returns(sessionRepository);
+
+        IPersistenceTransactionProvider transactionProvider = Substitute.For<IPersistenceTransactionProvider>();
+
+        IPersistenceTransaction transaction = Substitute.For<IPersistenceTransaction>();
+
+        transactionProvider
+            .BeginTransactionAsync(
+                Arg.Any<IsolationLevel>(),
+                Arg.Any<CancellationToken>())
+            .Returns(transaction);
+
+        var accountService = new AccountService(
+            context,
+            transactionProvider);
+
+        // Act
+        Deposit.Response response = await accountService.DepositAsync(
+            new Deposit.Request(session.SessionId.Value, -300m),
+            CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Deposit.Response.Failure>(response);
+        Assert.Equal(0m, account.Balance.Value);
+    }
+}
